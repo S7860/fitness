@@ -74,13 +74,13 @@ const formatAIResponse = (text) => {
       return (
         <div key={i} className="flex gap-2.5 mb-2 pl-1">
           <span className="font-bold min-w-[20px]" style={{color:T.blue}}>{bullet.trim()}</span>
-          <span className="leading-relaxed" style={{color:T.textMuted}}>{formatInline(content)}</span>
+          <span className="leading-relaxed text-sm md:text-base" style={{color:T.textMuted}}>{formatInline(content)}</span>
         </div>
       );
     }
     
     if (line.trim() === '') return <div key={i} className="h-2.5" />;
-    return <div key={i} className="mb-2 leading-relaxed" style={{color:T.textMuted}}>{formatInline(line)}</div>;
+    return <div key={i} className="mb-2 leading-relaxed text-sm md:text-base" style={{color:T.textMuted}}>{formatInline(line)}</div>;
   });
 };
 
@@ -421,13 +421,12 @@ const WORKOUT_DAYS = [
         sets:3, reps:"10–12", rest:"60s", startW:"Knees bent", w8:"15 reps controlled", w16:"Straight legs + ankle weights",
         form:[
           "Dead hang from pull-up bar. Engage core BEFORE legs move.",
-          "Raise legs (bent knees first) until knees reach chest. At top: tuck tailbone UP.",
-          "Lower with COMPLETE control — 3 seconds down. Never drop or swing.",
+          "Keep arms straight, raise legs without swinging, control descent.",
         ],
-        mistakes:["Swinging body for momentum","Dropping legs fast (the slow eccentric is where the work happens)","Not tilting pelvis at top"],
-        tip:"Directly targets the lower belly region. As fat reduces from deficit, these strengthen the underlying muscles for a dramatically tighter look.",
-        advanced:"Week 9+: Straight-leg raises. Week 13+: Ankle weights.",
-        beginner:"Lying leg raises on floor if hanging is too difficult.",
+        mistakes:["Using momentum","Dropping legs fast"],
+        tip:"Focus on the core doing the actual lift, not the hip flexors.",
+        advanced:"Week 9+: Straight legs all sets.",
+        beginner:"Knee tucks to chest.",
       },
       {
         name:"Plank Hold", priority:"A", muscle:"Transverse Abdominis, Full Core, Lower Back",
@@ -638,7 +637,7 @@ const WORKOUT_DAYS = [
         sets:4, reps:"15", rest:"60s", startW:"12–15 lb DBs", w8:"20–25 lb", w16:"28–32 lb",
         form:[
           "Sit at bench end, lean torso to chest-on-thighs. DBs hanging.",
-          "Warm both arms to sides — elbows slightly bent, constant. Lead with elbows going BACK.",
+          "Raise both arms to sides — elbows slightly bent, constant. Lead with elbows going BACK.",
           "Shoulder blades fully squeeze at top. Hold 2 seconds.",
         ],
         mistakes:["Swinging with momentum","Not reaching full arm elevation","Elbows bending too much"],
@@ -1510,102 +1509,24 @@ export default function TransformationBible() {
 
   }, [curDay]);
 
-  const css = `
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    ::-webkit-scrollbar { width: 0; height: 0; }
-    body { background: ${T.bg}; color: ${T.text}; -webkit-tap-highlight-color: transparent; }
-    .ex-row:hover { background: ${T.bg} !important; }
-    .meal-row:hover { background: ${T.bg} !important; }
-    .btn-press:active { transform: scale(0.96); }
-    @keyframes fadeIn { from { opacity:0; transform:translateY(6px); } to { opacity:1; transform:translateY(0); } }
-    .fade { animation: fadeIn 0.2s ease-out; }
-
-    /* Hide horizontal scrollbars but allow swiping indicator shadow */
-    .custom-scroll {
-      -webkit-overflow-scrolling: touch;
-      scrollbar-width: none;
-    }
-    .custom-scroll::-webkit-scrollbar {
-      display: none;
-    }
-
-    /* Mobile specific style tweaks via media queries */
-    @media (max-width: 640px) {
-      .responsive-stats-grid {
-        grid-template-columns: repeat(2, 1fr) !important;
-        gap: 8px !important;
-      }
-      .responsive-header {
-        padding: 20px 16px 16px !important;
-      }
-      .responsive-body-padding {
-        padding: 16px 12px !important;
-      }
-      .exercise-row-layout {
-        display: flex !important;
-        flex-direction: column !important;
-        align-items: flex-start !important;
-        gap: 8px !important;
-      }
-      .exercise-row-info {
-        width: 100% !important;
-        display: flex !important;
-        justify-content: space-between !important;
-        align-items: center !important;
-      }
-      .exercise-row-details {
-        width: 100% !important;
-        display: flex !important;
-        flex-wrap: wrap !important;
-        gap: 6px !important;
-        justify-content: flex-start !important;
-        border-top: 1px dashed ${T.border};
-        padding-top: 8px !important;
-        margin-top: 4px !important;
-      }
-      .meal-header-layout {
-        flex-direction: column !important;
-        gap: 12px !important;
-      }
-      .meal-macros-container {
-        width: 100% !important;
-        justify-content: space-between !important;
-        border-top: 1px dashed ${T.border};
-        padding-top: 10px !important;
-        margin-top: 4px !important;
-      }
-      .responsive-split-grid {
-        grid-template-columns: 1fr !important;
-        gap: 12px !important;
-      }
-      .ai-bar-stack {
-        flex-direction: column !important;
-        align-items: stretch !important;
-      }
-    }
-  `;
-
   return (
-    <div style={{background:T.bg,color:T.text,minHeight:"100vh",fontFamily:T.sans,maxWidth:920,margin:"0 auto",paddingBottom:80}}>
-      {/* Safer way to inject CSS in Next.js */}
-      <style dangerouslySetInnerHTML={{ __html: css }} />
-
+    <div className="w-full max-w-4xl mx-auto px-4 sm:px-6 overflow-x-hidden min-h-screen pb-20" style={{ background: T.bg, color: T.text, fontFamily: T.sans }}>
+      
       {/* ── HEADER ── */}
-      <div className="responsive-header" style={{padding:"32px 24px 24px",background:T.surface,borderBottom:`1px solid ${T.border}`}}>
-        <div style={{fontFamily:T.mono,fontSize:9,fontWeight:600,letterSpacing:4,color:T.green,textTransform:"uppercase",marginBottom:10}}>Personal Transformation System</div>
-        <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-end",flexWrap:"wrap",gap:16}}>
-          <div style={{minWidth: "260px", flex: 1}}>
-            <h1 style={{fontSize:"clamp(24px,5vw,36px)",fontWeight:700,letterSpacing:-1,lineHeight:1.1,color:T.text}}>
-              The Transformation<br/>Bible
+      <div className="py-8 border-b border-slate-200" style={{ background: T.surface }}>
+        <div className="font-mono text-[9px] font-semibold tracking-widest text-emerald-700 uppercase mb-2">Personal Transformation System</div>
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
+          <div>
+            <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight leading-tight" style={{ color: T.text }}>
+              The Transformation<br />Bible
             </h1>
-            <p style={{fontSize:13,color:T.textMuted,marginTop:8}}>Male · 30 · 215 lb · Back Width · Shoulder Mass · Fat Loss</p>
+            <p className="text-xs sm:text-sm text-slate-500 mt-2">Male · 30 · 215 lb · Back Width · Shoulder Mass · Fat Loss</p>
           </div>
-          <div className="responsive-stats-grid" style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:10,width:"100%",maxWidth:"480px",marginTop:12}}>
-            {[["~2,050","Cal",T.blue],["185g+","Protein",T.green],["16:8","IF",T.purple],["5–6×","Sessions",T.amber]].map(([v,l,c]) => (
-              <div key={l} style={{background:T.bg,border:`1px solid ${T.border}`,borderRadius:10,padding:"10px 8px",textAlign:"center",boxShadow:T.shadow}}>
-                <div style={{fontFamily:T.mono,fontSize:16,fontWeight:700,color:c}}>{v}</div>
-                <div style={{fontSize:8,fontWeight:600,color:T.textDim,letterSpacing:1,textTransform:"uppercase",marginTop:2}}>{l}</div>
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 w-full md:w-auto md:max-w-md">
+            {[["~2,050", "Cal", T.blue], ["185g+", "Protein", T.green], ["16:8", "IF", T.purple], ["5–6×", "Sessions", T.amber]].map(([v, l, c]) => (
+              <div key={l} className="bg-white border border-slate-200 rounded-xl py-3 px-4 text-center shadow-sm">
+                <div className="font-mono text-base sm:text-lg font-bold" style={{ color: c }}>{v}</div>
+                <div className="text-[9px] font-semibold text-slate-400 tracking-wider uppercase mt-1">{l}</div>
               </div>
             ))}
           </div>
@@ -1613,122 +1534,120 @@ export default function TransformationBible() {
       </div>
 
       {/* ── NAV ── */}
-      <div style={{background:T.surface,borderBottom:`1px solid ${T.border}`,display:"flex",overflowX:"auto",position:"sticky",top:0,zIndex:50,boxShadow: "0 2px 5px rgba(0,0,0,0.02)"}} className="custom-scroll">
-        {TABS.map(t=>(
-          <button key={t.id} className="btn-press" onClick={()=>{setTab(t.id);setExOpen(null);setMOpen(null);}} style={{
-            background:"none",border:"none",
-            borderBottom:tab===t.id?`2px solid ${T.blue}`:"2px solid transparent",
-            color:tab===t.id?T.blue:T.textDim,
-            padding:"16px 18px",cursor:"pointer",fontSize:13,fontFamily:T.sans,
-            letterSpacing:0.3,whiteSpace:"nowrap",transition:"color 0.15s",
-            display:"flex",alignItems:"center",gap:7,fontWeight:tab===t.id?600:500,
-            minHeight: "48px"
-          }}>
-            <span style={{fontSize:12}}>{t.icon}</span>{t.label}
+      <div className="bg-white border-b border-slate-200 flex overflow-x-auto sticky top-0 z-50 shadow-sm custom-scroll">
+        {TABS.map(t => (
+          <button 
+            key={t.id} 
+            className="btn-press flex items-center gap-2 py-4 px-5 text-xs sm:text-sm whitespace-nowrap transition-colors font-medium border-b-2" 
+            onClick={() => { setTab(t.id); setExOpen(null); setMOpen(null); }} 
+            style={{
+              borderColor: tab === t.id ? T.blue : "transparent",
+              color: tab === t.id ? T.blue : T.textDim,
+              fontWeight: tab === t.id ? 600 : 500,
+              minHeight: "48px"
+            }}
+          >
+            <span className="text-xs">{t.icon}</span>{t.label}
           </button>
         ))}
       </div>
 
-      {/* Combined responsive padding and fade className to solve the duplicate key issue */}
-      <div className="responsive-body-padding fade" style={{padding:"28px 20px"}}>
+      <div className="py-6 fade">
 
         {/* ══════════ TRAINING ══════════ */}
-        {tab==="training" && (
-          <div>
+        {tab === "training" && (
+          <div className="w-full">
             {/* Day selector */}
-            <div style={{display:"flex",gap:8,marginBottom:28,overflowX:"auto",paddingBottom:4}} className="custom-scroll">
-              {WORKOUT_DAYS.map(d=>(
-                <button key={d.key} className="btn-press" onClick={()=>{setWDay(d.key);setExOpen(null);setAiWorkoutResult(null);}} style={{
-                  flexShrink:0,background:wDay===d.key?d.color+"10":T.surface,
-                  border:`1px solid ${wDay===d.key?d.color:T.border}`,
-                  boxShadow: wDay===d.key?"none":T.shadow,
-                  borderRadius:12,padding:"10px 14px",cursor:"pointer",textAlign:"center",minWidth:76,
-                  transition:"all 0.15s",
-                  minHeight: "56px"
-                }}>
-                  <div style={{fontSize:18,marginBottom:2}}>{d.emoji}</div>
-                  <div style={{fontFamily:T.mono,fontSize:10,color:wDay===d.key?d.color:T.textMuted,fontWeight:600}}>{d.key}</div>
-                  <div style={{fontSize:9,color:T.textDim,marginTop:2,fontWeight:500}}>{d.label.split(" ")[0]}</div>
+            <div className="flex gap-2 overflow-x-auto pb-4 custom-scroll">
+              {WORKOUT_DAYS.map(d => (
+                <button 
+                  key={d.key} 
+                  className="btn-press flex-shrink-0 rounded-2xl py-3 px-4 text-center min-w-[76px] transition-all border shadow-sm" 
+                  onClick={() => { setWDay(d.key); setExOpen(null); setAiWorkoutResult(null); }} 
+                  style={{
+                    background: wDay === d.key ? `${d.color}10` : T.surface,
+                    borderColor: wDay === d.key ? d.color : T.border,
+                    minHeight: "64px"
+                  }}
+                >
+                  <div className="text-xl mb-1">{d.emoji}</div>
+                  <div className="font-mono text-xs font-bold" style={{ color: wDay === d.key ? d.color : T.textMuted }}>{d.key}</div>
+                  <div className="text-[9px] text-slate-400 mt-0.5 font-medium">{d.label.split(" ")[0]}</div>
                 </button>
               ))}
             </div>
 
             {curDay && (
-              <div className="fade">
+              <div className="fade space-y-6 mt-4">
                 {/* Day header */}
-                <div style={{marginBottom:24}}>
-                  <div style={{display:"flex",alignItems:"baseline",gap:10,flexWrap:"wrap",marginBottom:10}}>
-                    <span style={{fontSize:22,fontWeight:700,color:curDay.color}}>{curDay.emoji} {curDay.label}</span>
-                    <span style={{fontSize:13,fontWeight:500,color:T.textMuted}}>{curDay.sub}</span>
-                    {curDay.sessionTime && <span style={{fontFamily:T.mono,fontSize:10,fontWeight:600,color:T.textDim,marginLeft:"auto"}}>⏱ {curDay.sessionTime}</span>}
+                <div className="space-y-3">
+                  <div className="flex flex-col sm:flex-row sm:items-baseline gap-2 sm:gap-4">
+                    <span className="text-xl sm:text-2xl font-bold" style={{ color: curDay.color }}>{curDay.emoji} {curDay.label}</span>
+                    <span className="text-xs sm:text-sm font-medium text-slate-500">{curDay.sub}</span>
+                    {curDay.sessionTime && <span className="font-mono text-xs font-semibold text-slate-400 sm:ml-auto">⏱ {curDay.sessionTime}</span>}
                   </div>
-                  <div style={{fontSize:13,color:T.textMuted,lineHeight:1.6,background:T.surface,border:`1px solid ${curDay.color}30`,borderLeft:`3px solid ${curDay.color}`,padding:"12px 16px",borderRadius:"0 8px 8px 0",boxShadow:T.shadow}}>
+                  <div className="text-sm text-slate-600 leading-relaxed bg-white border border-slate-200/60 border-l-4 rounded-r-xl p-4 shadow-sm" style={{ borderLeftColor: curDay.color }}>
                     {curDay.overview}
                   </div>
                 </div>
 
                 {/* ── ✨ INTERACTIVE WORKOUT ADJUSTER ── */}
-                <div style={{background:T.surface,border:`1px solid ${T.border}`,borderRadius:12,padding:"20px",marginBottom:28,boxShadow:T.shadow}}>
-                  <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:12}}>
-                    <span style={{fontSize:18}}>✨</span>
-                    <h3 style={{fontSize:15,fontWeight:700,color:T.text}}>AI Workout Adjuster</h3>
+                <div className="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm space-y-4">
+                  <div className="flex items-center gap-2">
+                    <span className="text-lg">✨</span>
+                    <h3 className="text-sm sm:text-base font-bold" style={{ color: T.text }}>AI Workout Adjuster</h3>
                   </div>
-                  <p style={{fontSize:13,color:T.textMuted,marginBottom:16,lineHeight:1.5}}>
+                  <p className="text-xs sm:text-sm text-slate-500 leading-relaxed">
                     Modify today's training program live using Gemini intelligence. Ideal for injuries, tight schedules, or limited hotel gym equipment.
                   </p>
-                  <div style={{display:"flex",gap:8,flexWrap:"wrap",marginBottom:14}} className="custom-scroll">
+                  <div className="flex flex-wrap gap-2 overflow-x-auto pb-1 custom-scroll">
                     {[
                       "I only have 30 minutes",
                       "I have shoulder pain",
                       "Dumbbells only version",
                       "Make it a home workout"
                     ].map(preset => (
-                      <button key={preset} onClick={() => setAiWorkoutInput(preset)} style={{
-                        background:T.bg,border:`1px solid ${T.border}`,borderRadius:20,padding:"6px 14px",fontSize:11,
-                        color:T.textMuted,cursor:"pointer",transition:"all 0.15s",minHeight:"36px"
-                      }} className="btn-press">
+                      <button 
+                        key={preset} 
+                        onClick={() => setAiWorkoutInput(preset)} 
+                        className="btn-press bg-slate-50 border border-slate-200 text-slate-600 text-xs py-1.5 px-3 rounded-full font-medium transition-colors"
+                        style={{ minHeight: "36px" }}
+                      >
                         {preset}
                       </button>
                     ))}
                   </div>
-                  <div style={{display:"flex",gap:8}} className="ai-bar-stack">
+                  <div className="flex flex-col sm:flex-row gap-3">
                     <input 
                       type="text" 
                       placeholder="e.g. Lower back feels tight, swap deadlifts out..."
                       value={aiWorkoutInput}
                       onChange={(e) => setAiWorkoutInput(e.target.value)}
-                      style={{
-                        flex:1,padding:"10px 14px",borderRadius:8,border:`1px solid ${T.border}`,
-                        fontSize:13,outline:"none",color:T.text,background:T.bg,minHeight:"44px"
-                      }}
+                      className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2 text-sm text-slate-800 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                      style={{ minHeight: "44px" }}
                     />
                     <button 
                       onClick={handleWorkoutAdaptation}
                       disabled={aiWorkoutLoading || !aiWorkoutInput.trim()}
-                      className="btn-press"
-                      style={{
-                        background:T.blue,color:"#fff",border:"none",borderRadius:8,padding:"10px 16px",
-                        fontSize:13,fontWeight:600,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",gap:6,
-                        opacity: (aiWorkoutLoading || !aiWorkoutInput.trim()) ? 0.6 : 1,
-                        minHeight:"44px"
-                      }}
+                      className="btn-press bg-blue-700 text-white rounded-xl px-5 py-2 text-sm font-semibold flex items-center justify-center gap-2 flex-shrink-0"
+                      style={{ minHeight: "44px", opacity: (aiWorkoutLoading || !aiWorkoutInput.trim()) ? 0.6 : 1 }}
                     >
                       {aiWorkoutLoading ? "Customizing..." : "✨ Adjust Workout"}
                     </button>
                   </div>
 
                   {aiWorkoutError && (
-                    <div style={{color:T.red,fontSize:13,marginTop:12,fontWeight:500}}>
+                    <div className="text-sm font-semibold text-red-700 mt-2">
                       {aiWorkoutError}
                     </div>
                   )}
 
                   {aiWorkoutResult && (
-                    <div className="fade" style={{marginTop:20,padding:"16px",background:T.card,borderRadius:8,borderLeft:`3px solid ${T.blue}`}}>
-                      <div style={{fontFamily:T.mono,fontSize:10,fontWeight:700,color:T.blue,textTransform:"uppercase",letterSpacing:1,marginBottom:10}}>
+                    <div className="fade mt-4 p-4 bg-slate-50 border-l-4 border-blue-700 rounded-r-xl">
+                      <div className="font-mono text-[10px] font-bold text-blue-700 uppercase tracking-wider mb-2">
                         Your Modified AI Routine
                       </div>
-                      <div style={{fontSize:14,color:T.text}}>
+                      <div className="text-sm text-slate-800 leading-relaxed">
                         {formatAIResponse(aiWorkoutResult)}
                       </div>
                     </div>
@@ -1736,109 +1655,108 @@ export default function TransformationBible() {
                 </div>
 
                 {/* Warm-up */}
-                {curDay.warmup.length>0 && (
-                  <div style={{marginBottom:28}}>
+                {curDay.warmup.length > 0 && (
+                  <div className="space-y-3">
                     <SectionLabel text="Warm-Up — 8 min" color={T.teal} />
-                    <div style={{display:"flex",flexWrap:"wrap",gap:8}}>
-                      {curDay.warmup.map((w,i)=>(
-                        <div key={i} style={{background:T.surface,border:`1px solid ${T.border}`,boxShadow:T.shadow,borderRadius:8,padding:"8px 14px",fontSize:13,fontWeight:500,color:T.textMuted}}>
-                          <span style={{color:T.teal,marginRight:6}}>→</span>{w}
+                    <div className="flex flex-wrap gap-2">
+                      {curDay.warmup.map((w, i) => (
+                        <div key={i} className="bg-white border border-slate-200 rounded-xl py-2 px-4 text-xs sm:text-sm font-medium text-slate-600 shadow-sm">
+                          <span className="text-teal-700 mr-2">→</span>{w}
                         </div>
                       ))}
                     </div>
                   </div>
                 )}
 
-                {/* Exercises */}
-                {curDay.exercises.length>0 && (
-                  <div style={{marginBottom:28}}>
+                {/* Exercises list - Stacks beautifully on mobile */}
+                {curDay.exercises.length > 0 && (
+                  <div className="space-y-4">
                     <SectionLabel text="Exercises" color={curDay.color} />
-                    {/* Responsive Column headers (hidden on mobile, responsive classes deal with styling) */}
-                    <div className="hidden sm:grid" style={{display:"grid",gridTemplateColumns:"1fr 60px 90px 120px 30px",gap:8,padding:"6px 18px",marginBottom:4}}>
-                      {["Exercise","Sets","Reps","Start Weight",""].map(h=>(
-                        <div key={h} style={{fontFamily:T.mono,fontSize:9,fontWeight:600,color:T.textDim,textTransform:"uppercase",letterSpacing:1.5}}>{h}</div>
-                      ))}
+                    
+                    {/* Header Columns: Hidden on Mobile */}
+                    <div className="hidden sm:grid grid-cols-12 gap-4 px-4 text-slate-400 font-mono text-[10px] uppercase font-bold tracking-wider">
+                      <div className="col-span-6">Exercise</div>
+                      <div className="col-span-2">Sets</div>
+                      <div className="col-span-2">Reps</div>
+                      <div className="col-span-2">Start Weight</div>
                     </div>
                     
-                    <div style={{display:"flex",flexDirection:"column",gap:8}}>
-                      {curDay.exercises.map((ex,i)=>{
-                        const key=`${wDay}-${i}`;
-                        const open=exOpen===key;
+                    <div className="space-y-3">
+                      {curDay.exercises.map((ex, i) => {
+                        const key = `${wDay}-${i}`;
+                        const open = exOpen === key;
                         return (
                           <div key={i} className="fade">
-                            <div className="ex-row exercise-row-layout" onClick={()=>setExOpen(open?null:key)} style={{
-                              display:"grid",gridTemplateColumns:"1fr 60px 90px 120px 30px",
-                              gap:8,padding:"14px 18px",
-                              background:open?T.card:T.surface,
-                              border:`1px solid ${open?curDay.color:T.border}`,
-                              boxShadow:open?"none":T.shadow,
-                              borderRadius:open?"12px 12px 0 0":12,
-                              cursor:"pointer",alignItems:"center",transition:"all 0.12s",
-                            }}>
-                              <div className="exercise-row-info" style={{width: "100%"}}>
-                                <div>
-                                  <div style={{display:"flex",gap:6,alignItems:"center",flexWrap:"wrap"}}>
-                                    <span style={{fontSize:14,fontWeight:600,color:T.text}}>{ex.name}</span>
-                                    {ex.priority==="A+" && <span style={{fontFamily:T.mono,fontSize:8,fontWeight:600,background:T.red+"15",color:T.red,border:`1px solid ${T.red}30`,borderRadius:6,padding:"2px 6px"}}>A+</span>}
-                                    {ex.priority==="A★" && <span style={{fontFamily:T.mono,fontSize:8,fontWeight:600,background:curDay.color+"15",color:curDay.color,border:`1px solid ${curDay.color}30`,borderRadius:6,padding:"2px 6px"}}>★ KEY</span>}
+                            {/* Card trigger */}
+                            <div 
+                              onClick={() => setExOpen(open ? null : key)}
+                              className="flex flex-col sm:grid sm:grid-cols-12 gap-3 p-4 bg-white border border-slate-200 hover:border-slate-300 rounded-2xl shadow-sm cursor-pointer transition-all"
+                            >
+                              {/* Exercise Main Info */}
+                              <div className="col-span-6 flex justify-between items-start">
+                                <div className="space-y-1">
+                                  <div className="flex items-center gap-2 flex-wrap">
+                                    <span className="text-sm sm:text-base font-bold text-slate-900">{ex.name}</span>
+                                    {ex.priority === "A+" && <span className="font-mono text-[9px] font-bold bg-red-100 text-red-800 border border-red-200 rounded px-1.5 py-0.5">A+</span>}
+                                    {ex.priority === "A★" && <span className="font-mono text-[9px] font-bold bg-slate-100 text-slate-700 border border-slate-200 rounded px-1.5 py-0.5">★ KEY</span>}
                                   </div>
-                                  <div style={{fontSize:11,fontWeight:500,color:T.textDim,marginTop:3}}>{ex.muscle}</div>
+                                  <div className="text-xs font-semibold text-slate-400">{ex.muscle}</div>
                                 </div>
-                                <span className="sm:hidden" style={{fontSize:16,fontWeight:600,color:T.textDim,display:"inline-block"}}>{open?"−":"+"}</span>
+                                <span className="sm:hidden text-lg font-bold text-slate-400">{open ? "−" : "+"}</span>
                               </div>
 
-                              {/* Desktop row columns - on mobile styled dynamically as details row inside media query */}
-                              <div className="hidden sm:block" style={{fontFamily:T.mono,fontSize:16,fontWeight:700,color:curDay.color}}>{ex.sets}×</div>
-                              <div className="hidden sm:block" style={{fontFamily:T.mono,fontSize:12,fontWeight:600,color:T.textMuted}}>{ex.reps} reps</div>
-                              <div className="hidden sm:block" style={{fontSize:12,fontWeight:500,color:T.textMuted}}>{ex.startW}</div>
-                              <div className="hidden sm:block" style={{fontSize:18,fontWeight:600,color:T.textDim,textAlign:"center"}}>{open?"−":"+"}</div>
+                              {/* Desktop Values */}
+                              <div className="hidden sm:block col-span-2 font-mono text-base font-bold" style={{ color: curDay.color }}>{ex.sets}×</div>
+                              <div className="hidden sm:block col-span-2 font-mono text-xs font-semibold text-slate-600">{ex.reps}</div>
+                              <div className="hidden sm:block col-span-2 font-mono text-xs font-semibold text-slate-500">{ex.startW}</div>
 
-                              {/* Mobile-only layout fallback within exercise-row-details class */}
-                              <div className="exercise-row-details sm:hidden" style={{display:"none"}}>
-                                <span style={{fontSize:11,background:curDay.color+"0a",color:curDay.color,fontWeight:600,padding:"2px 8px",borderRadius:6}}>Sets: {ex.sets}×</span>
-                                <span style={{fontSize:11,background:T.bg,color:T.textMuted,fontWeight:600,padding:"2px 8px",borderRadius:6}}>Reps: {ex.reps}</span>
-                                <span style={{fontSize:11,background:T.bg,color:T.textMuted,fontWeight:500,padding:"2px 8px",borderRadius:6}}>Start: {ex.startW}</span>
+                              {/* Mobile Values: Stacked Grid */}
+                              <div className="flex sm:hidden gap-2 pt-3 border-t border-slate-100 border-dashed w-full">
+                                <span className="text-xs font-semibold px-2 py-1 bg-slate-100 text-slate-600 rounded-md">Sets: {ex.sets}×</span>
+                                <span className="text-xs font-semibold px-2 py-1 bg-slate-100 text-slate-600 rounded-md">Reps: {ex.reps}</span>
+                                <span className="text-xs font-semibold px-2 py-1 bg-slate-100 text-slate-600 rounded-md">Start: {ex.startW}</span>
                               </div>
                             </div>
 
+                            {/* Dropdown Card Detail */}
                             {open && (
-                              <div className="fade" style={{background:T.surface,border:`1px solid ${curDay.color}`,borderTop:"none",borderRadius:"0 0 12px 12px",padding:"16px 20px",boxShadow:"0 4px 6px rgba(0,0,0,0.02)"}}>
-                                {/* Weight targets */}
-                                <div style={{display:"flex",gap:20,flexWrap:"wrap",marginBottom:20,justifyContent:"space-between"}}>
-                                  {[["Rest",ex.rest||"90s",T.textMuted],["Week 1",ex.startW,T.textMuted],["Week 8",ex.w8,T.blue],["Week 16",ex.w16,T.green]].map(([l,v,c])=>(
-                                    <div key={l} style={{minWidth:"70px"}}>
-                                      <div style={{fontFamily:T.mono,fontSize:9,fontWeight:600,color:T.textDim,textTransform:"uppercase",letterSpacing:1}}>{l}</div>
-                                      <div style={{fontFamily:T.mono,fontSize:12,fontWeight:600,color:c,marginTop:4}}>{v}</div>
+                              <div className="fade bg-white border-x border-b border-slate-200 rounded-b-2xl p-5 -mt-3 shadow-md space-y-5">
+                                {/* Target metrics */}
+                                <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 pb-4 border-b border-slate-100">
+                                  {[["Rest", ex.rest || "90s", T.textMuted], ["Week 1", ex.startW, T.textMuted], ["Week 8", ex.w8, T.blue], ["Week 16", ex.w16, T.green]].map(([l, v, c]) => (
+                                    <div key={l}>
+                                      <div className="font-mono text-[9px] font-bold text-slate-400 uppercase tracking-wide">{l}</div>
+                                      <div className="font-mono text-xs sm:text-sm font-bold mt-1" style={{ color: c }}>{v}</div>
                                     </div>
                                   ))}
                                 </div>
-                                {/* Form steps */}
-                                <div style={{marginBottom:18}}>
-                                  <SectionLabel text="Form — Follow strictly" color={curDay.color} />
-                                  {ex.form?.map((f,fi)=>(
-                                    <div key={fi} style={{display:"flex",gap:12,marginBottom:10}}>
-                                      <span style={{flexShrink:0,width:20,height:20,borderRadius:"50%",background:curDay.color+"20",color:curDay.color,display:"flex",alignItems:"center",justifyContent:"center",fontSize:10,fontWeight:700,marginTop:1}}>{fi+1}</span>
-                                      <span style={{fontSize:13,color:T.textMuted,lineHeight:1.6}}>{f}</span>
+                                {/* Form Steps */}
+                                <div className="space-y-2">
+                                  <SectionLabel text="Execution Guidelines" color={curDay.color} />
+                                  {ex.form?.map((f, fi) => (
+                                    <div key={fi} className="flex gap-3 items-start">
+                                      <span className="flex-shrink-0 w-5 h-5 rounded-full text-[10px] font-extrabold flex items-center justify-center mt-0.5" style={{ background: `${curDay.color}15`, color: curDay.color }}>{fi + 1}</span>
+                                      <span className="text-sm text-slate-600 leading-relaxed">{f}</span>
                                     </div>
                                   ))}
                                 </div>
-                                {/* 4 boxes - responsive layout grids */}
-                                <div className="responsive-split-grid" style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:10}}>
-                                  <div style={{background:T.red+"08",border:`1px solid ${T.red}20`,borderRadius:8,padding:"14px"}}>
-                                    <div style={{fontFamily:T.mono,fontSize:9,fontWeight:700,color:T.red,letterSpacing:2,textTransform:"uppercase",marginBottom:8}}>Common Mistakes</div>
-                                    {ex.mistakes?.map((m,mi)=><div key={mi} style={{fontSize:12,color:T.red,marginBottom:6,lineHeight:1.5}}>✗ {m}</div>)}
+                                {/* Mistake and tip blocks */}
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                  <div className="bg-red-50 border border-red-100 rounded-xl p-4 space-y-2">
+                                    <div className="font-mono text-[9px] font-bold text-red-800 uppercase tracking-wider">Common Mistakes</div>
+                                    {ex.mistakes?.map((m, mi) => <div key={mi} className="text-xs text-red-700 leading-relaxed">✗ {m}</div>)}
                                   </div>
-                                  <div style={{background:curDay.color+"08",border:`1px solid ${curDay.color}20`,borderRadius:8,padding:"14px"}}>
-                                    <div style={{fontFamily:T.mono,fontSize:9,fontWeight:700,color:curDay.color,letterSpacing:2,textTransform:"uppercase",marginBottom:8}}>Coach's Tip</div>
-                                    <div style={{fontSize:12,color:T.textMuted,lineHeight:1.6}}>{ex.tip}</div>
+                                  <div className="bg-slate-50 border border-slate-200 rounded-xl p-4 space-y-2">
+                                    <div className="font-mono text-[9px] font-bold text-slate-600 uppercase tracking-wider">Coach's Tip</div>
+                                    <div className="text-xs text-slate-600 leading-relaxed">{ex.tip}</div>
                                   </div>
-                                  <div style={{background:T.purple+"08",border:`1px solid ${T.purple}20`,borderRadius:8,padding:"14px"}}>
-                                    <div style={{fontFamily:T.mono,fontSize:9,fontWeight:700,color:T.purple,letterSpacing:2,textTransform:"uppercase",marginBottom:8}}>Advanced Progression</div>
-                                    <div style={{fontSize:12,color:T.purple,lineHeight:1.6}}>{ex.advanced}</div>
+                                  <div className="bg-purple-50 border border-purple-100 rounded-xl p-4 space-y-2">
+                                    <div className="font-mono text-[9px] font-bold text-purple-800 uppercase tracking-wider">Advanced Progression</div>
+                                    <div className="text-xs text-purple-700 leading-relaxed">{ex.advanced}</div>
                                   </div>
-                                  <div style={{background:T.teal+"08",border:`1px solid ${T.teal}20`,borderRadius:8,padding:"14px"}}>
-                                    <div style={{fontFamily:T.mono,fontSize:9,fontWeight:700,color:T.teal,letterSpacing:2,textTransform:"uppercase",marginBottom:8}}>Beginner Modification</div>
-                                    <div style={{fontSize:12,color:T.teal,lineHeight:1.6}}>{ex.beginner}</div>
+                                  <div className="bg-teal-50 border border-teal-100 rounded-xl p-4 space-y-2">
+                                    <div className="font-mono text-[9px] font-bold text-teal-800 uppercase tracking-wider">Beginner Modification</div>
+                                    <div className="text-xs text-teal-700 leading-relaxed">{ex.beginner}</div>
                                   </div>
                                 </div>
                               </div>
@@ -1851,61 +1769,60 @@ export default function TransformationBible() {
                 )}
 
                 {/* Cardio */}
-                <div style={{marginBottom:24}}>
+                <div className="space-y-3">
                   <SectionLabel text="Cardio Focus" color={T.green} />
-                  <div style={{background:T.surface,border:`1px solid ${T.border}`,borderLeft:`3px solid ${T.green}`,borderRadius:"0 10px 10px 0",padding:"16px 20px",boxShadow:T.shadow}}>
-                    <div style={{display:"flex",gap:16,flexWrap:"wrap",marginBottom:12,justifyContent:"space-between"}}>
-                      {[["Type",curDay.cardio.type,T.text],["Duration",curDay.cardio.duration,T.green],["Intensity",curDay.cardio.intensity,T.textMuted],["Timing",curDay.cardio.timing,T.textDim]].map(([l,v,c])=>(
-                        <div key={l} style={{minWidth:"80px"}}>
-                          <div style={{fontFamily:T.mono,fontSize:9,fontWeight:600,color:T.textDim,textTransform:"uppercase",letterSpacing:1.5}}>{l}</div>
-                          <div style={{fontSize:13,color:c,marginTop:4,fontWeight:600}}>{v}</div>
+                  <div className="bg-white border border-slate-200 border-l-4 rounded-r-2xl p-5 shadow-sm space-y-4" style={{ borderLeftColor: T.green }}>
+                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                      {[["Type", curDay.cardio.type, T.text], ["Duration", curDay.cardio.duration, T.green], ["Intensity", curDay.cardio.intensity, T.textMuted], ["Timing", curDay.cardio.timing, T.textDim]].map(([l, v, c]) => (
+                        <div key={l}>
+                          <div className="font-mono text-[9px] font-bold text-slate-400 uppercase tracking-wider">{l}</div>
+                          <div className="text-xs sm:text-sm font-semibold mt-1" style={{ color: c }}>{v}</div>
                         </div>
                       ))}
                     </div>
-                    <div style={{fontSize:13,color:T.textMuted,lineHeight:1.7}}>{curDay.cardio.why}</div>
+                    <div className="text-sm text-slate-500 leading-relaxed">{curDay.cardio.why}</div>
                   </div>
                 </div>
 
                 {/* Cooldown */}
-                <div style={{marginBottom:32}}>
+                <div className="space-y-3">
                   <SectionLabel text="Cool-Down — 8 min" />
-                  <div style={{display:"flex",flexWrap:"wrap",gap:8}}>
-                    {curDay.cooldown.map((c,ci)=>(
-                      <div key={ci} style={{background:T.surface,border:`1px solid ${T.border}`,boxShadow:T.shadow,borderRadius:8,padding:"8px 14px",fontSize:13,fontWeight:500,color:T.textMuted}}>{c}</div>
+                  <div className="flex flex-wrap gap-2">
+                    {curDay.cooldown.map((c, ci) => (
+                      <div key={ci} className="bg-white border border-slate-200 rounded-xl py-2 px-4 text-xs sm:text-sm font-medium text-slate-600 shadow-sm">{c}</div>
                     ))}
                   </div>
                 </div>
 
                 {/* ── ✨ ELITE BIOMECHANICAL DISTRIBUTION RADAR ── */}
-                <div style={{background:T.surface,border:`1px solid ${T.border}`,borderRadius:16,padding:"24px",boxShadow:T.shadowLg}}>
+                <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-lg space-y-6">
                   <SectionLabel text="Active Session Biomechanics" color={curDay.color} />
                   
-                  <div className="responsive-split-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "28px", alignItems: "center" }}>
-                    
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
                     {/* Visual Radar */}
-                    <div style={{ padding: "10px" }}>
+                    <div className="p-3 bg-slate-50/50 rounded-2xl border border-slate-100">
                       <MuscleRadarChart day={curDay} distribution={muscleDistribution} />
                     </div>
 
                     {/* Precision Readout */}
-                    <div>
-                      <h3 style={{fontSize:15,fontWeight:700,color:T.text, marginBottom:16}}>Workload Telemetry</h3>
-                      <div style={{display:"flex",flexDirection:"column",gap:14}}>
+                    <div className="space-y-4">
+                      <h3 className="text-sm sm:text-base font-bold" style={{ color: T.text }}>Workload Telemetry</h3>
+                      <div className="space-y-3">
                         {muscleDistribution.map((muscle) => (
                           <div key={muscle.name}>
-                            <div style={{display:"flex",justifyContent:"space-between",alignItems:"baseline",marginBottom:6}}>
-                              <span style={{fontSize:13,fontWeight:600,color:T.text}}>{muscle.name}</span>
-                              <span style={{fontFamily:T.mono,fontSize:11,fontWeight:600,color:T.textDim}}>{muscle.percentage}%</span>
+                            <div className="flex justify-between items-baseline mb-1 text-xs">
+                              <span className="font-semibold" style={{ color: T.text }}>{muscle.name}</span>
+                              <span className="font-mono font-semibold" style={{ color: T.textDim }}>{muscle.percentage}%</span>
                             </div>
                             {/* Sleek precision bar */}
-                            <div style={{width:"100%",height:"4px",background:T.card,borderRadius:4,overflow:"hidden"}}>
-                              <div style={{
-                                width:`${muscle.percentage}%`,
-                                height:"100%",
-                                background: `linear-gradient(90deg, ${curDay.color}dd, ${curDay.color})`,
-                                borderRadius:4,
-                                transition:"width 1s cubic-bezier(0.4, 0, 0.2, 1)"
-                              }} />
+                            <div className="w-full h-1 bg-slate-100 rounded-full overflow-hidden">
+                              <div 
+                                className="h-full rounded-full transition-all duration-1000" 
+                                style={{
+                                  width: `${muscle.percentage}%`,
+                                  background: `linear-gradient(90deg, ${curDay.color}dd, ${curDay.color})`
+                                }} 
+                              />
                             </div>
                           </div>
                         ))}
@@ -1920,182 +1837,181 @@ export default function TransformationBible() {
         )}
 
         {/* ══════════ NUTRITION ══════════ */}
-        {tab==="nutrition" && (
-          <div>
+        {tab === "nutrition" && (
+          <div className="space-y-6">
             {/* Stats bar */}
-            <div className="responsive-stats-grid" style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:10,marginBottom:24}}>
-              {[["~2,050","Calories",T.blue],["185g+","Protein",T.green],["9:30 PM","IF Closes",T.purple],["2× Daily","Chai (2%)",T.amber]].map(([v,l,c])=>(
-                <div key={l} style={{background:T.surface,border:`1px solid ${T.border}`,boxShadow:T.shadow,borderRadius:12,padding:"14px 10px",textAlign:"center"}}>
-                  <div style={{fontFamily:T.mono,fontSize:16,fontWeight:700,color:c}}>{v}</div>
-                  <div style={{fontSize:9,fontWeight:600,color:T.textDim,letterSpacing:1,textTransform:"uppercase",marginTop:4}}>{l}</div>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+              {[["~2,050", "Calories", T.blue], ["185g+", "Protein", T.green], ["9:30 PM", "IF Closes", T.purple], ["2× Daily", "Chai (2%)", T.amber]].map(([v, l, c]) => (
+                <div key={l} className="bg-white border border-slate-200 rounded-2xl p-4 text-center shadow-sm">
+                  <div className="font-mono text-base sm:text-lg font-bold" style={{ color: c }}>{v}</div>
+                  <div className="text-[9px] font-semibold text-slate-400 tracking-wider uppercase mt-1">{l}</div>
                 </div>
               ))}
             </div>
 
             {/* Chai note */}
-            <div style={{background:T.surface,border:`1px solid ${T.border}`,borderLeft:`3px solid ${T.amber}`,borderRadius:"0 10px 10px 0",padding:"12px 16px",marginBottom:24,fontSize:13,color:T.textMuted,lineHeight:1.6,boxShadow:T.shadow}}>
-              ☕ <strong style={{color:T.amber}}>Your 2 daily chais (2% milk) = ~130 cal + 8g protein.</strong> Built into every day's totals. Keep them. Unsweetened or ½ tsp max.
+            <div className="bg-white border border-slate-200 border-l-4 rounded-r-2xl p-4 shadow-sm text-sm text-slate-600 leading-relaxed" style={{ borderLeftColor: T.amber }}>
+              ☕ <strong style={{ color: T.amber }}>Your 2 daily chais (2% milk) = ~130 cal + 8g protein.</strong> Built into every day's totals. Keep them. Unsweetened or ½ tsp max.
             </div>
 
             {/* Meal slot tabs */}
-            <div style={{display:"flex",gap:8,marginBottom:24,overflowX:"auto",paddingBottom:4}} className="custom-scroll">
-              {MEALS.map(slot=>(
-                <button key={slot.id} className="btn-press" onClick={()=>{setMSlot(slot.id);setMOpen(null);}} style={{
-                  flexShrink:0,background:mSlot===slot.id?slot.color+"10":T.surface,
-                  border:`1px solid ${mSlot===slot.id?slot.color:T.border}`,
-                  boxShadow: mSlot===slot.id?"none":T.shadow,
-                  borderRadius:12,padding:"10px 14px",cursor:"pointer",textAlign:"center",minWidth:85,
-                  transition:"all 0.15s",
-                  minHeight: "56px"
-                }}>
-                  <div style={{fontSize:20,marginBottom:2}}>{slot.icon}</div>
-                  <div style={{fontSize:11,fontWeight:700,color:mSlot===slot.id?slot.color:T.textMuted}}>{slot.label}</div>
-                  <div style={{fontFamily:T.mono,fontSize:9,fontWeight:600,color:T.textDim,marginTop:2}}>{slot.time}</div>
+            <div className="flex gap-2 overflow-x-auto pb-4 custom-scroll">
+              {MEALS.map(slot => (
+                <button 
+                  key={slot.id} 
+                  className="btn-press flex-shrink-0 rounded-2xl py-3 px-4 text-center min-w-[85px] transition-all border shadow-sm" 
+                  onClick={() => { setMSlot(slot.id); setMOpen(null); }} 
+                  style={{
+                    background: mSlot === slot.id ? `${slot.color}10` : T.surface,
+                    borderColor: mSlot === slot.id ? slot.color : T.border,
+                    minHeight: "56px"
+                  }}
+                >
+                  <div className="text-xl mb-1">{slot.icon}</div>
+                  <div className="text-xs font-bold" style={{ color: mSlot === slot.id ? slot.color : T.textMuted }}>{slot.label}</div>
+                  <div className="font-mono text-[9px] font-semibold text-slate-400 mt-1">{slot.time}</div>
                 </button>
               ))}
             </div>
 
             {curSlot && (
-              <div className="fade">
-                <div style={{fontSize:13,color:T.textMuted,lineHeight:1.7,marginBottom:20,padding:"12px 16px",background:T.surface,border:`1px solid ${T.border}`,borderLeft:`3px solid ${curSlot.color}`,borderRadius:"0 10px 10px 0",boxShadow:T.shadow}}>{curSlot.note}</div>
+              <div className="fade space-y-4">
+                <div className="bg-white border border-slate-200 border-l-4 rounded-r-2xl p-4 shadow-sm text-sm text-slate-600 leading-relaxed animate-pulse" style={{ borderLeftColor: curSlot.color }}>
+                  {curSlot.note}
+                </div>
                 
                 {/* ── ✨ INSTANT RECIPE REMIXER CONTROLS ── */}
-                <div style={{background:T.surface,border:`1px solid ${T.border}`,borderRadius:12,padding:"16px",marginBottom:20,boxShadow:T.shadow}}>
-                  <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:8}}>
-                    <span style={{fontSize:16}}>✨</span>
-                    <h4 style={{fontSize:14,fontWeight:700,color:T.text}}>AI Meal Remixer</h4>
+                <div className="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm space-y-3">
+                  <div className="flex items-center gap-2">
+                    <span className="text-lg">✨</span>
+                    <h4 className="text-sm sm:text-base font-bold" style={{ color: T.text }}>AI Meal Remixer</h4>
                   </div>
-                  <p style={{fontSize:12,color:T.textDim,marginBottom:12}}>
+                  <p className="text-xs sm:text-sm text-slate-500 leading-relaxed">
                     Input requests like "Make it vegan" or "Double the protein", then tap a meal card's ✨ button to transform it.
                   </p>
-                  <div style={{display:"flex",gap:8}} className="ai-bar-stack">
+                  <div className="flex gap-2">
                     <input 
                       type="text" 
                       placeholder="Enter modifier (e.g. Vegetarian swap, Desi spices upgrade...)" 
                       value={aiMealInput}
                       onChange={(e) => setAiMealInput(e.target.value)}
-                      style={{
-                        flex:1,padding:"10px 14px",borderRadius:8,border:`1px solid ${T.border}`,
-                        fontSize:13,outline:"none",color:T.text,background:T.bg,minHeight:"44px"
-                      }}
+                      className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2 text-sm text-slate-800 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                      style={{ minHeight: "44px" }}
                     />
                   </div>
                 </div>
 
-                <div style={{fontSize:13,fontWeight:600,color:T.textDim,marginBottom:14}}>Select any option to expand recipe ({curSlot.options.length} options)</div>
-                <div style={{display:"flex",flexDirection:"column",gap:8}}>
-                  {curSlot.options.map((meal,mi)=>{
-                    const open=mOpen===meal.name;
+                <div className="text-xs sm:text-sm font-semibold text-slate-400 px-1">Select any option to expand recipe ({curSlot.options.length} options)</div>
+                
+                <div className="space-y-4">
+                  {curSlot.options.map((meal, mi) => {
+                    const open = mOpen === meal.name;
                     const remixedResult = aiMealResults[meal.name];
                     const loadingRemix = aiMealLoading[meal.name];
 
                     return (
                       <div key={mi} className="fade">
-                        <div className="meal-row" style={{
-                          background:open?T.card:T.surface,
-                          border:`1px solid ${open?curSlot.color:T.border}`,
-                          boxShadow:open?"none":T.shadow,
-                          borderRadius:open?"12px 12px 0 0":12,
-                          padding:"16px 20px",cursor:"pointer",transition:"all 0.12s",
-                        }}>
-                          <div className="meal-header-layout" style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",gap:12}}>
-                            <div style={{flex:1}} onClick={()=>setMOpen(open?null:meal.name)}>
-                              <div style={{display:"flex",gap:6,flexWrap:"wrap",marginBottom:8}}>
+                        <div 
+                          className="p-5 bg-white border hover:border-slate-300 rounded-2xl shadow-sm transition-all"
+                          style={{ borderColor: open ? curSlot.color : T.border }}
+                        >
+                          <div className="flex flex-col md:flex-row justify-between items-start gap-4">
+                            <div className="flex-1 space-y-2 cursor-pointer" onClick={() => setMOpen(open ? null : meal.name)}>
+                              <div className="flex gap-2 flex-wrap items-center">
                                 <TagPill text={meal.tag} color={curSlot.color} />
-                                <span style={{fontFamily:T.mono,fontSize:9,fontWeight:600,color:T.textDim,background:T.bg,border:`1px solid ${T.border}`,borderRadius:10,padding:"2px 8px"}}>{meal.diff}</span>
-                                <span style={{fontFamily:T.mono,fontSize:9,fontWeight:600,color:T.textDim,background:T.bg,border:`1px solid ${T.border}`,borderRadius:10,padding:"2px 8px"}}>⏱ {meal.time}</span>
+                                <span className="font-mono text-[9px] font-bold text-slate-400 bg-slate-100 border border-slate-200 rounded px-1.5 py-0.5">{meal.diff}</span>
+                                <span className="font-mono text-[9px] font-bold text-slate-400 bg-slate-100 border border-slate-200 rounded px-1.5 py-0.5">⏱ {meal.time}</span>
                               </div>
-                              <div style={{fontSize:15,fontWeight:700,color:T.text,marginBottom:4}}>{meal.name}</div>
-                              <div style={{fontSize:13,color:T.textMuted,lineHeight:1.5}}>{meal.desc}</div>
+                              <h4 className="text-base font-bold text-slate-900 leading-tight">{meal.name}</h4>
+                              <p className="text-xs sm:text-sm text-slate-500 leading-relaxed">{meal.desc}</p>
                             </div>
                             
-                            <div className="meal-macros-container" style={{flexShrink:0,textAlign:"right",display:"flex",flexDirection:"column",alignItems:"flex-end"}}>
-                              <div style={{display:"flex",gap:16,marginBottom:8,justifyContent:"flex-end"}}>
-                                <div style={{textAlign:"center"}}>
-                                  <div style={{fontFamily:T.mono,fontSize:18,fontWeight:700,color:T.blue}}>{meal.cal}</div>
-                                  <div style={{fontFamily:T.mono,fontSize:9,fontWeight:600,color:T.textDim,letterSpacing:1.5,textTransform:"uppercase"}}>cal</div>
+                            <div className="w-full md:w-auto flex flex-row md:flex-col items-center md:items-end justify-between md:justify-center gap-3 pt-4 md:pt-0 border-t md:border-t-0 border-slate-100 border-dashed">
+                              <div className="flex gap-4">
+                                <div className="text-center">
+                                  <div className="font-mono text-base font-bold" style={{ color: T.blue }}>{meal.cal}</div>
+                                  <div className="font-mono text-[9px] font-semibold text-slate-400 uppercase tracking-wider">cal</div>
                                 </div>
-                                <div style={{textAlign:"center"}}>
-                                  <div style={{fontFamily:T.mono,fontSize:18,fontWeight:700,color:T.green}}>{meal.pro}g</div>
-                                  <div style={{fontFamily:T.mono,fontSize:9,fontWeight:600,color:T.textDim,letterSpacing:1.5,textTransform:"uppercase"}}>protein</div>
+                                <div className="text-center">
+                                  <div className="font-mono text-base font-bold" style={{ color: T.green }}>{meal.pro}g</div>
+                                  <div className="font-mono text-[9px] font-semibold text-slate-400 uppercase tracking-wider">protein</div>
                                 </div>
                               </div>
-                              <div style={{display:"flex",gap:8,alignItems:"center",justifyContent:"flex-end",width:"100%"}}>
+                              <div className="flex gap-2 items-center">
                                 <button 
                                   onClick={(e) => { e.stopPropagation(); handleMealRemix(meal); }}
                                   disabled={loadingRemix}
-                                  className="btn-press"
-                                  style={{
-                                    background:T.bg,border:`1px solid ${T.border}`,borderRadius:8,padding:"6px 12px",
-                                    fontSize:11,fontWeight:600,color:curSlot.color,cursor:"pointer",display:"flex",alignItems:"center",gap:4,
-                                    minHeight: "36px"
-                                  }}
+                                  className="btn-press bg-slate-50 border border-slate-200 text-xs py-1.5 px-3 rounded-lg font-bold flex items-center gap-1"
+                                  style={{ color: curSlot.color, minHeight: "36px" }}
                                 >
                                   {loadingRemix ? "Wait..." : "✨ Remix"}
                                 </button>
-                                <span style={{fontSize:18,fontWeight:700,color:T.textDim,cursor:"pointer",minWidth:"24px",textAlign:"center"}} onClick={()=>setMOpen(open?null:meal.name)}>{open?"−":"+"}</span>
+                                <span className="text-lg font-bold text-slate-400 min-w-[24px] text-center cursor-pointer" onClick={() => setMOpen(open ? null : meal.name)}>{open ? "−" : "+"}</span>
                               </div>
                             </div>
                           </div>
-                        </div>
-                        {open && (
-                          <div className="fade" style={{background:T.surface,border:`1px solid ${curSlot.color}`,borderTop:"none",borderRadius:"0 0 12px 12px",padding:"20px",boxShadow:"0 4px 6px rgba(0,0,0,0.02)"}}>
-                            
-                            {/* AI Remix Output */}
-                            {remixedResult && (
-                              <div className="fade" style={{background:curSlot.color+"08",border:`1px dashed ${curSlot.color}`,borderRadius:10,padding:"16px",marginBottom:20}}>
-                                <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:10,flexWrap:"wrap",gap:8}}>
-                                  <div style={{fontFamily:T.mono,fontSize:10,fontWeight:700,color:curSlot.color,letterSpacing:1,textTransform:"uppercase"}}>
-                                    ✨ Live AI Recipe Transformation
+
+                          {/* Nested expanded content directly inside card container */}
+                          {open && (
+                            <div className="fade border-t border-slate-100 border-dashed mt-5 pt-5 space-y-6">
+                              {/* AI Remix Output */}
+                              {remixedResult && (
+                                <div className="fade rounded-xl p-4 border border-dashed" style={{ background: `${curSlot.color}05`, borderColor: curSlot.color }}>
+                                  <div className="flex justify-between items-center mb-3 flex-wrap gap-2">
+                                    <div className="font-mono text-[10px] font-bold uppercase tracking-wider" style={{ color: curSlot.color }}>
+                                      ✨ Live AI Recipe Transformation
+                                    </div>
+                                    <button 
+                                      onClick={() => setAiMealResults(prev => { const n = { ...prev }; delete n[meal.name]; return n; })}
+                                      className="text-xs font-semibold text-slate-400 hover:text-slate-600 min-h-[32px]"
+                                    >
+                                      Reset to Default
+                                    </button>
                                   </div>
-                                  <button 
-                                    onClick={() => setAiMealResults(prev => { const n = {...prev}; delete n[meal.name]; return n; })}
-                                    style={{background:"none",border:"none",color:T.textDim,cursor:"pointer",fontSize:11,fontWeight:600,minHeight:"32px"}}
-                                  >
-                                    Reset to Default
-                                  </button>
+                                  <div className="text-sm text-slate-800 leading-relaxed">
+                                    {formatAIResponse(remixedResult)}
+                                  </div>
                                 </div>
-                                <div style={{fontSize:14,color:T.text}}>
-                                  {formatAIResponse(remixedResult)}
+                              )}
+
+                              {/* Ingredients */}
+                              <div className="space-y-2">
+                                <SectionLabel text="Ingredients" color={curSlot.color} />
+                                <div className="flex flex-wrap gap-2">
+                                  {meal.ing.map((ing, ii) => (
+                                    <span key={ii} className="bg-slate-50 border border-slate-200 text-slate-700 text-xs font-medium px-3 py-1.5 rounded-full">{ing}</span>
+                                  ))}
                                 </div>
                               </div>
-                            )}
 
-                            {/* Ingredients */}
-                            <div style={{marginBottom:20}}>
-                              <SectionLabel text="Ingredients" color={curSlot.color} />
-                              <div style={{display:"flex",flexWrap:"wrap",gap:8}}>
-                                {meal.ing.map((ing,ii)=>(
-                                  <span key={ii} style={{background:T.bg,border:`1px solid ${T.border}`,borderRadius:16,padding:"6px 14px",fontSize:12,fontWeight:500,color:T.text}}>{ing}</span>
+                              {/* Recipe Steps */}
+                              <div className="space-y-3">
+                                <SectionLabel text="Recipe / Steps" color={curSlot.color} />
+                                {meal.steps.map((step, si) => (
+                                  <div key={si} className="flex gap-3 items-start">
+                                    <span className="flex-shrink-0 w-6 h-6 rounded-full text-xs font-extrabold flex items-center justify-center mt-0.5" style={{ background: `${curSlot.color}15`, color: curSlot.color }}>{si + 1}</span>
+                                    <div>
+                                      <div className="text-sm font-bold text-slate-800 mb-0.5">{step.s}</div>
+                                      <div className="text-sm text-slate-500 leading-relaxed">{step.d}</div>
+                                    </div>
+                                  </div>
                                 ))}
                               </div>
-                            </div>
-                            {/* Recipe */}
-                            <div style={{marginBottom:20}}>
-                              <SectionLabel text="Recipe / Steps" color={curSlot.color} />
-                              {meal.steps.map((step,si)=>(
-                                <div key={si} style={{display:"flex",gap:14,marginBottom:12}}>
-                                  <div style={{flexShrink:0,width:24,height:24,borderRadius:"50%",background:curSlot.color+"20",display:"flex",alignItems:"center",justifyContent:"center",fontSize:11,fontWeight:700,color:curSlot.color,marginTop:1}}>{si+1}</div>
-                                  <div>
-                                    <div style={{fontSize:13,fontWeight:700,color:T.text,marginBottom:2}}>{step.s}</div>
-                                    <div style={{fontSize:13,color:T.textMuted,lineHeight:1.7}}>{step.d}</div>
-                                  </div>
+
+                              {/* Notes + Swap */}
+                              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <div className="bg-slate-50 border border-slate-200 rounded-xl p-4 space-y-1">
+                                  <SectionLabel text="Cook's Notes" />
+                                  <div className="text-xs text-slate-500 leading-relaxed">{meal.notes || "No special notes."}</div>
                                 </div>
-                              ))}
-                            </div>
-                            {/* Notes + Swap */}
-                            <div className="responsive-split-grid" style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:12}}>
-                              <div style={{background:T.bg,border:`1px solid ${T.border}`,borderRadius:10,padding:"14px"}}>
-                                <SectionLabel text="Cook's Notes" />
-                                <div style={{fontSize:12,color:T.textMuted,lineHeight:1.6}}>{meal.notes||"No special notes."}</div>
-                              </div>
-                              <div style={{background:curSlot.color+"08",border:`1px solid ${curSlot.color}25`,borderRadius:10,padding:"14px"}}>
-                                <SectionLabel text="Alternative / Swap" color={curSlot.color} />
-                                <div style={{fontSize:12,color:T.textMuted,lineHeight:1.6}}>{meal.swap}</div>
+                                <div className="border rounded-xl p-4 space-y-1" style={{ background: `${curSlot.color}05`, borderColor: `${curSlot.color}25` }}>
+                                  <SectionLabel text="Alternative / Swap" color={curSlot.color} />
+                                  <div className="text-xs text-slate-500 leading-relaxed">{meal.swap}</div>
+                                </div>
                               </div>
                             </div>
-                          </div>
-                        )}
+                          )}
+                        </div>
                       </div>
                     );
                   })}
@@ -2106,39 +2022,35 @@ export default function TransformationBible() {
         )}
 
         {/* ══════════ SUPPLEMENTS ══════════ */}
-        {tab==="supplements" && (
-          <div>
-            <div style={{fontSize:14,color:T.textMuted,lineHeight:1.8,marginBottom:24,padding:"16px 20px",background:T.surface,border:`1px solid ${T.border}`,borderRadius:12,boxShadow:T.shadow}}>
-              <strong style={{color:T.blue}}>Supplements accelerate results on top of solid training and nutrition.</strong> Not substitutes for either. Start with Essential tier. Add others progressively over weeks.
+        {tab === "supplements" && (
+          <div className="space-y-4">
+            <div className="text-sm sm:text-base text-slate-600 leading-relaxed p-5 bg-white border border-slate-200 rounded-2xl shadow-sm">
+              <strong style={{ color: T.blue }}>Supplements accelerate results on top of solid training and nutrition.</strong> Not substitutes for either. Start with Essential tier. Add others progressively over weeks.
             </div>
-            <div style={{display:"flex",flexDirection:"column",gap:8}}>
-              {SUPPS.map((supp,i)=>{
-                const open=sOpen===i;
-                const tc=tierCol(supp.tier);
+            <div className="space-y-3">
+              {SUPPS.map((supp, i) => {
+                const open = sOpen === i;
+                const tc = tierCol(supp.tier);
                 return (
                   <div key={i} className="fade">
-                    <div onClick={()=>setSOpen(open?null:i)} style={{
-                      background:open?T.card:T.surface,
-                      border:`1px solid ${open?tc:T.border}`,
-                      boxShadow:open?"none":T.shadow,
-                      borderRadius:open?"12px 12px 0 0":12,
-                      padding:"16px 20px",cursor:"pointer",display:"flex",justifyContent:"space-between",alignItems:"center",gap:12,
-                      transition:"all 0.12s",
-                      minHeight: "48px"
-                    }}>
-                      <div>
-                        <div style={{display:"flex",gap:10,alignItems:"center",marginBottom:6,flexWrap:"wrap"}}>
-                          <span style={{fontSize:16,fontWeight:700,color:T.text}}>{supp.name}</span>
+                    <div 
+                      onClick={() => setSOpen(open ? null : i)}
+                      className="flex justify-between items-center gap-4 p-4 bg-white border hover:border-slate-300 rounded-2xl shadow-sm cursor-pointer transition-all"
+                      style={{ borderColor: open ? tc : T.border }}
+                    >
+                      <div className="space-y-1">
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <span className="text-sm sm:text-base font-bold text-slate-800">{supp.name}</span>
                           <TagPill text={supp.tier} color={tc} />
                         </div>
-                        <div style={{fontSize:12,fontWeight:500,color:T.textDim}}>{supp.timing} · <span style={{fontFamily:T.mono,fontWeight:600}}>{supp.dose}</span></div>
+                        <div className="text-xs font-semibold text-slate-400">{supp.timing} · <span className="font-mono font-bold">{supp.dose}</span></div>
                       </div>
-                      <div style={{fontSize:20,fontWeight:700,color:T.textDim}}>{open?"−":"+"}</div>
+                      <div className="text-lg font-bold text-slate-400">{open ? "−" : "+"}</div>
                     </div>
                     {open && (
-                      <div className="fade" style={{background:T.surface,border:`1px solid ${tc}`,borderTop:"none",borderRadius:"0 0 12px 12px",padding:"20px",boxShadow:"0 4px 6px rgba(0,0,0,0.02)"}}>
-                        <div style={{fontSize:14,color:T.textMuted,lineHeight:1.8,marginBottom:16}}>{supp.why}</div>
-                        <div style={{fontSize:12,fontWeight:600,color:T.textDim,borderTop:`1px solid ${T.border}`,paddingTop:14}}>🏷 {supp.brand}</div>
+                      <div className="fade bg-white border-x border-b border-slate-200 rounded-b-2xl p-5 -mt-3 shadow-md space-y-4">
+                        <div className="text-sm text-slate-600 leading-relaxed">{supp.why}</div>
+                        <div className="text-xs font-semibold text-slate-400 border-t border-slate-100 pt-3">🏷 {supp.brand}</div>
                       </div>
                     )}
                   </div>
@@ -2149,28 +2061,30 @@ export default function TransformationBible() {
         )}
 
         {/* ══════════ RULES ══════════ */}
-        {tab==="rules" && (
-          <div>
-            <div style={{display:"flex",gap:8,marginBottom:24}}>
-              {[["training","Training",T.blue],["nutrition","Nutrition",T.green],["lifestyle","Lifestyle",T.purple]].map(([k,l,c])=>(
-                <button key={k} onClick={()=>setRTab(k)} style={{
-                  flex:1,background:rTab===k?c+"10":T.surface,
-                  border:`1px solid ${rTab===k?c:T.border}`,
-                  boxShadow:rTab===k?"none":T.shadow,
-                  borderRadius:10,padding:"12px",cursor:"pointer",
-                  fontSize:13,color:rTab===k?c:T.textMuted,
-                  fontFamily:T.sans,fontWeight:rTab===k?700:500,transition:"all 0.15s",
-                  minHeight: "44px"
-                }}>{l}</button>
+        {tab === "rules" && (
+          <div className="space-y-4">
+            <div className="flex gap-2 border-b border-slate-200 pb-2">
+              {[["training", "Training", T.blue], ["nutrition", "Nutrition", T.green], ["lifestyle", "Lifestyle", T.purple]].map(([k, l, c]) => (
+                <button 
+                  key={k} 
+                  onClick={() => setRTab(k)} 
+                  className="btn-press flex-1 rounded-xl py-2.5 px-3 text-sm font-bold border transition-all"
+                  style={{
+                    background: rTab === k ? `${c}10` : T.surface,
+                    borderColor: rTab === k ? c : T.border,
+                    color: rTab === k ? c : T.textMuted,
+                    minHeight: "44px"
+                  }}
+                >
+                  {l}
+                </button>
               ))}
             </div>
-            <div className="fade" style={{display:"flex",flexDirection:"column",gap:8}}>
-              {RULES[rTab].map((rule,i)=>(
-                <div key={i} style={{background:T.surface,border:`1px solid ${T.border}`,boxShadow:T.shadow,borderRadius:12,padding:"16px 20px",display:"flex",gap:16,alignItems:"flex-start"}}>
-                  <div style={{fontFamily:T.mono,fontSize:14,fontWeight:700,color:T.textDim,flexShrink:0,paddingTop:1}}>
-                    {String(i+1).padStart(2,"0")}
-                  </div>
-                  <div style={{fontSize:14,color:T.textMuted,lineHeight:1.7}}>{rule}</div>
+            <div className="fade space-y-3">
+              {RULES[rTab].map((rule, i) => (
+                <div key={i} className="flex gap-4 items-start p-4 bg-white border border-slate-200 rounded-2xl shadow-sm">
+                  <div className="font-mono text-sm font-bold text-slate-400 mt-0.5">{String(i + 1).padStart(2, "0")}</div>
+                  <div className="text-sm sm:text-base text-slate-600 leading-relaxed">{rule}</div>
                 </div>
               ))}
             </div>
@@ -2178,29 +2092,25 @@ export default function TransformationBible() {
         )}
 
         {/* ══════════ FAQ ══════════ */}
-        {tab==="faq" && (
-          <div>
-            <div style={{fontSize:14,color:T.textMuted,marginBottom:24,fontWeight:500}}>Every question you'll have at any point in the program.</div>
-            <div style={{display:"flex",flexDirection:"column",gap:8}}>
-              {FAQS.map((faq,i)=>{
-                const open=fOpen===i;
+        {tab === "faq" && (
+          <div className="space-y-4">
+            <div className="text-sm sm:text-base text-slate-400 font-semibold px-1">Every question you'll have at any point in the program.</div>
+            <div className="space-y-3">
+              {FAQS.map((faq, i) => {
+                const open = fOpen === i;
                 return (
                   <div key={i} className="fade">
-                    <div onClick={()=>setFOpen(open?null:i)} style={{
-                      background:open?T.card:T.surface,
-                      border:`1px solid ${open?T.blue:T.border}`,
-                      boxShadow:open?"none":T.shadow,
-                      borderRadius:open?"12px 12px 0 0":12,
-                      padding:"16px 20px",cursor:"pointer",display:"flex",justifyContent:"space-between",alignItems:"center",gap:14,
-                      transition:"all 0.12s",
-                      minHeight: "48px"
-                    }}>
-                      <div style={{fontSize:15,fontWeight:600,color:open?T.blue:T.text,lineHeight:1.5}}>{faq.q}</div>
-                      <div style={{fontSize:20,fontWeight:700,color:T.textDim,flexShrink:0}}>{open?"−":"+"}</div>
+                    <div 
+                      onClick={() => setFOpen(open ? null : i)}
+                      className="flex justify-between items-center gap-4 p-4 bg-white border hover:border-slate-300 rounded-2xl shadow-sm cursor-pointer transition-all"
+                      style={{ borderColor: open ? T.blue : T.border, minHeight: "48px" }}
+                    >
+                      <div className="text-sm sm:text-base font-bold text-slate-800 leading-tight">{faq.q}</div>
+                      <div className="text-lg font-bold text-slate-400 flex-shrink-0">{open ? "−" : "+"}</div>
                     </div>
                     {open && (
-                      <div className="fade" style={{background:T.surface,border:`1px solid ${T.blue}`,borderTop:"none",borderRadius:"0 0 12px 12px",padding:"20px",boxShadow:"0 4px 6px rgba(0,0,0,0.02)"}}>
-                        <div style={{fontSize:14,color:T.textMuted,lineHeight:1.9}}>{faq.a}</div>
+                      <div className="fade bg-white border-x border-b border-slate-200 rounded-b-2xl p-5 -mt-3 shadow-md">
+                        <div className="text-sm sm:text-base text-slate-600 leading-relaxed">{faq.a}</div>
                       </div>
                     )}
                   </div>
@@ -2211,114 +2121,93 @@ export default function TransformationBible() {
         )}
 
         {/* ══════════ ✨ AI PERSONAL COACH CHAT & KEY CONFIG ══════════ */}
-        {tab==="coach" && (
-          <div className="fade" style={{display:"flex",flexDirection:"column",gap:16}}>
+        {tab === "coach" && (
+          <div className="fade space-y-6">
             
             {/* ── ✨ SECURE LOCAL API KEY MANAGER ── */}
-            <div style={{background:T.surface,border:`1px solid ${T.border}`,borderRadius:12,padding:"20px",boxShadow:T.shadow}}>
-              <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:12}}>
-                <span style={{fontSize:20}}>🔑</span>
-                <h3 style={{fontSize:15,fontWeight:700,color:T.text}}>Gemini API Credentials</h3>
+            <div className="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm space-y-4">
+              <div className="flex items-center gap-2">
+                <span className="text-xl">🔑</span>
+                <h3 className="text-sm sm:text-base font-bold" style={{ color: T.text }}>Gemini API Credentials</h3>
               </div>
-              <p style={{fontSize:13,color:T.textMuted,marginBottom:14,lineHeight:1.5}}>
+              <p className="text-xs sm:text-sm text-slate-500 leading-relaxed">
                 To run the AI Workout, AI Meal, and Coach features in your local copy of the app, paste your personal Gemini API Key below. This key will be saved securely inside your browser's private storage.
               </p>
-              <div style={{display:"flex",gap:8,flexWrap:"wrap"}} className="ai-bar-stack">
+              <div className="flex flex-col sm:flex-row gap-3">
                 <input 
                   type="password" 
                   placeholder="Paste Gemini API Key (begins with AIzaSy...)" 
                   value={geminiApiKey}
                   onChange={(e) => saveApiKey(e.target.value)}
-                  style={{
-                    flex:1,padding:"10px 14px",borderRadius:8,border:`1px solid ${T.border}`,
-                    fontSize:13,outline:"none",color:T.text,background:T.bg,minHeight:"44px"
-                  }}
+                  className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2 text-sm text-slate-800 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                  style={{ minHeight: "44px" }}
                 />
                 {geminiApiKey && (
                   <button 
                     onClick={() => saveApiKey("")}
-                    className="btn-press"
-                    style={{
-                      background:T.red+"15",color:T.red,border:`1px solid ${T.red}30`,borderRadius:8,padding:"0 16px",
-                      fontSize:13,fontWeight:600,cursor:"pointer",minHeight:"44px"
-                    }}
+                    className="btn-press bg-red-50 text-red-700 border border-red-200 rounded-xl px-4 text-sm font-semibold transition-colors flex items-center justify-center"
+                    style={{ minHeight: "44px" }}
                   >
                     Clear Key
                   </button>
                 )}
               </div>
               {geminiApiKey && (
-                <div style={{color:T.green,fontSize:12,fontWeight:600,marginTop:10,display:"flex",alignItems:"center",gap:4}}>
+                <div className="text-xs sm:text-sm font-semibold text-green-700 flex items-center gap-1 mt-1">
                   <span>✓</span> Key saved locally! Your AI features are ready.
                 </div>
               )}
             </div>
 
-            <div style={{fontSize:14,color:T.textMuted,lineHeight:1.8,padding:"16px 20px",background:T.surface,border:`1px solid ${T.border}`,borderRadius:12,boxShadow:T.shadow}}>
-              <strong style={{color:T.purple}}>Have a unique question?</strong> Discuss customized meal choices, complex exercise form setups, or active recovery suggestions grounded in the science of the program.
+            <div className="text-sm sm:text-base text-slate-600 leading-relaxed p-4 bg-white border border-slate-200 rounded-2xl shadow-sm">
+              <strong style={{ color: T.purple }}>Have a unique question?</strong> Discuss customized meal choices, complex exercise form setups, or active recovery suggestions grounded in the science of the program.
             </div>
 
-            <div style={{
-              background:T.surface,border:`1px solid ${T.border}`,borderRadius:12,
-              padding:"16px",height:"550px",display:"flex",flexDirection:"column",
-              justifyContent:"space-between",boxShadow:T.shadow
-            }}>
+            <div className="bg-white border border-slate-200 rounded-2xl p-4 h-[550px] flex flex-col justify-between shadow-sm">
               {/* Chat Log */}
-              <div style={{flex:1,overflowY:"auto",paddingRight:4,marginBottom:16,display:"flex",flexDirection:"column",gap:12}} className="custom-scroll">
+              <div className="flex-1 overflow-y-auto pr-1 mb-4 flex flex-col gap-3 custom-scroll">
                 {chatMessages.map((msg, i) => (
-                  <div key={i} className="fade" style={{
-                    alignSelf: msg.role === "user" ? "flex-end" : "flex-start",
-                    maxWidth: msg.role === "user" ? "85%" : "95%",
-                    background: msg.role === "user" ? T.blue : T.card,
-                    color: msg.role === "user" ? "#ffffff" : T.text,
-                    padding: "16px 20px",
-                    borderRadius: msg.role === "user" ? "14px 14px 0 14px" : "14px 14px 14px 0",
-                  }}>
+                  <div 
+                    key={i} 
+                    className="fade p-4 rounded-2xl"
+                    style={{
+                      alignSelf: msg.role === "user" ? "flex-end" : "flex-start",
+                      maxWidth: msg.role === "user" ? "85%" : "95%",
+                      background: msg.role === "user" ? T.blue : T.card,
+                      color: msg.role === "user" ? "#ffffff" : T.text,
+                      borderRadius: msg.role === "user" ? "14px 14px 0 14px" : "14px 14px 14px 0"
+                    }}
+                  >
                     {msg.role === "user" ? (
-                      <div style={{fontSize: 14, lineHeight: 1.5}}>{msg.text}</div>
+                      <div className="text-sm leading-relaxed">{msg.text}</div>
                     ) : (
-                      <div style={{fontSize: 14}}>{formatAIResponse(msg.text)}</div>
+                      <div className="text-sm leading-relaxed">{formatAIResponse(msg.text)}</div>
                     )}
                   </div>
                 ))}
                 {chatLoading && (
-                  <div style={{
-                    alignSelf: "flex-start",
-                    background: T.card,
-                    color: T.textDim,
-                    padding: "10px 14px",
-                    borderRadius: "14px 14px 14px 0",
-                    fontSize: 13,
-                    fontStyle: "italic"
-                  }}>
+                  <div className="align-self-start bg-slate-100 text-slate-500 p-3 rounded-2xl text-sm italic rounded-bl-none">
                     Thinking...
                   </div>
                 )}
               </div>
 
               {/* Chat Input Bar */}
-              <div style={{display:"flex",gap:8,borderTop:`1px solid ${T.border}`,paddingTop:12}}>
+              <div className="flex gap-2 border-t border-slate-100 pt-3">
                 <input 
                   type="text" 
                   placeholder="Ask your coach..."
                   value={chatInput}
                   onChange={(e) => setChatInput(e.target.value)}
                   onKeyDown={(e) => { if (e.key === "Enter") handleSendMessage(); }}
-                  style={{
-                    flex:1,padding:"10px 14px",borderRadius:8,border:`1px solid ${T.border}`,
-                    fontSize:13,outline:"none",color:T.text,background:T.bg,minHeight:"44px"
-                  }}
+                  className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2 text-sm text-slate-800 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                  style={{ minHeight: "44px" }}
                 />
                 <button 
                   onClick={handleSendMessage}
                   disabled={chatLoading || !chatInput.trim()}
-                  className="btn-press"
-                  style={{
-                    background:T.blue,color:"#fff",border:"none",borderRadius:8,padding:"10px 16px",
-                    fontSize:13,fontWeight:600,cursor:"pointer",display:"flex",alignItems:"center",gap:6,
-                    opacity: (chatLoading || !chatInput.trim()) ? 0.6 : 1,
-                    minHeight:"44px"
-                  }}
+                  className="btn-press bg-blue-700 text-white rounded-xl px-5 py-2 text-sm font-semibold flex items-center justify-center"
+                  style={{ minHeight: "44px", opacity: (chatLoading || !chatInput.trim()) ? 0.6 : 1 }}
                 >
                   Ask
                 </button>
@@ -2329,8 +2218,8 @@ export default function TransformationBible() {
       </div>
 
       {/* Footer */}
-      <div style={{textAlign:"center",padding:"24px",borderTop:`1px solid ${T.border}`,background:T.surface}}>
-        <div style={{fontFamily:T.mono,fontSize:9,fontWeight:600,color:T.textDim,letterSpacing:3,textTransform:"uppercase"}}>
+      <div className="text-center py-6 border-t border-slate-200 mt-6" style={{ background: T.surface }}>
+        <div className="font-mono text-[9px] font-semibold text-slate-400 tracking-wider uppercase">
           Built for Consistency · Not Perfection · Every Session Forward
         </div>
       </div>
