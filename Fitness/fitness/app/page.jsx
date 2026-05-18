@@ -6,36 +6,42 @@ import { useState, useMemo, useEffect } from "react";
    DESIGN TOKENS (MODERN LIGHT THEME)
 ============================================================ */
 const T = {
-  bg: "#f8fafc",          // Slate 50 - App background
-  surface: "#ffffff",     // White - Card background
-  card: "#f1f5f9",        // Slate 100 - Expanded accordion/alt background
+  bg: "#f8fafc",          // Slate 50
+  surface: "#ffffff",     // White
+  card: "#f1f5f9",        // Slate 100
   border: "#e2e8f0",      // Slate 200
   borderHover: "#cbd5e1", // Slate 300
-  lime: "#4d7c0f",        // Lime 700 - Darker for light mode legibility
+  lime: "#4d7c0f",        // Lime 700
   green: "#15803d",       // Green 700
   red: "#b91c1c",         // Red 700
   blue: "#1d4ed8",        // Blue 700
   amber: "#b45309",       // Amber 700
   purple: "#7e22ce",      // Purple 700
   teal: "#0f766e",        // Teal 700
-  text: "#0f172a",        // Slate 900 - Primary text
-  textMuted: "#475569",   // Slate 600 - Secondary text
-  textDim: "#64748b",     // Slate 500 - Tertiary/Label text
-  mono: "'JetBrains Mono', 'Fira Code', monospace",
-  sans: "'Inter', 'SF Pro Display', system-ui, sans-serif",
-  shadow: "0 1px 3px rgba(0,0,0,0.05), 0 1px 2px rgba(0,0,0,0.025)",
-  shadowLg: "0 4px 6px -1px rgba(0,0,0,0.05), 0 2px 4px -1px rgba(0,0,0,0.03)"
+  text: "#0f172a",        // Slate 900
+  textMuted: "#475569",   // Slate 600
+  textDim: "#64748b",     // Slate 500
 };
 
 /* ============================================================
    GLOBAL REUSABLE UI HELPERS
 ============================================================ */
-const label = (text, col) => (
-  <div style={{fontFamily:T.mono,fontSize:9,letterSpacing:4,color:col||T.textDim,textTransform:"uppercase",marginBottom:12, fontWeight:600}}>{text}</div>
+const SectionLabel = ({ text, color }) => (
+  <div 
+    className="font-mono text-[9px] md:text-[10px] tracking-[0.25em] uppercase mb-3 font-semibold"
+    style={{ color: color || T.textDim }}
+  >
+    {text}
+  </div>
 );
 
-const pill = (text, col, size=10) => (
-  <span style={{background:(col||T.green)+"15",border:`1px solid ${col||T.green}30`,color:col||T.green,fontSize:size,padding:"2px 10px",borderRadius:20,fontWeight:600,letterSpacing:0.3,whiteSpace:"nowrap"}}>{text}</span>
+const TagPill = ({ text, color }) => (
+  <span 
+    className="text-[10px] md:text-xs px-2.5 py-0.5 rounded-full font-semibold tracking-wide whitespace-nowrap"
+    style={{ background: `${color}15`, border: `1px solid ${color}30`, color: color }}
+  >
+    {text}
+  </span>
 );
 
 /* ============================================================
@@ -45,10 +51,10 @@ const formatInline = (text) => {
   const parts = text.split(/(\*\*.*?\*\*|\*.*?\*)/g);
   return parts.map((part, i) => {
     if (part.startsWith('**') && part.endsWith('**')) {
-      return <strong key={i} style={{fontWeight:700, color:T.text}}>{part.slice(2,-2)}</strong>;
+      return <strong key={i} className="font-bold" style={{color:T.text}}>{part.slice(2,-2)}</strong>;
     }
     if (part.startsWith('*') && part.endsWith('*')) {
-      return <em key={i} style={{fontStyle:'italic', color:T.textMuted}}>{part.slice(1,-1)}</em>;
+      return <em key={i} className="italic" style={{color:T.textMuted}}>{part.slice(1,-1)}</em>;
     }
     return part;
   });
@@ -58,28 +64,23 @@ const formatAIResponse = (text) => {
   if (!text) return null;
   const lines = text.split('\n');
   return lines.map((line, i) => {
-    // Headers
-    if (line.startsWith('### ')) return <h3 key={i} style={{fontSize:15, fontWeight:700, color:T.text, marginTop:18, marginBottom:8}}>{formatInline(line.replace('### ', ''))}</h3>;
-    if (line.startsWith('## ')) return <h2 key={i} style={{fontSize:17, fontWeight:800, color:T.text, marginTop:20, marginBottom:10}}>{formatInline(line.replace('## ', ''))}</h2>;
+    if (line.startsWith('### ')) return <h3 key={i} className="text-sm md:text-base font-bold mt-4 mb-2" style={{color:T.text}}>{formatInline(line.replace('### ', ''))}</h3>;
+    if (line.startsWith('## ')) return <h2 key={i} className="text-base md:text-lg font-extrabold mt-5 mb-2.5" style={{color:T.text}}>{formatInline(line.replace('## ', ''))}</h2>;
     
-    // List items (Numbers or Bullets)
     const listMatch = line.match(/^(\d+\.|-|\*)\s+/);
     if (listMatch) {
       const bullet = listMatch[0];
       const content = line.slice(bullet.length);
       return (
-        <div key={i} style={{display:'flex', gap:10, marginBottom:8, paddingLeft:4}}>
-          <span style={{fontWeight:700, color:T.blue, minWidth:20}}>{bullet.trim()}</span>
-          <span style={{lineHeight:1.6, color:T.textMuted}}>{formatInline(content)}</span>
+        <div key={i} className="flex gap-2.5 mb-2 pl-1">
+          <span className="font-bold min-w-[20px]" style={{color:T.blue}}>{bullet.trim()}</span>
+          <span className="leading-relaxed" style={{color:T.textMuted}}>{formatInline(content)}</span>
         </div>
       );
     }
     
-    // Paragraph spacing
-    if (line.trim() === '') return <div key={i} style={{height:10}} />;
-    
-    // Standard paragraph
-    return <div key={i} style={{marginBottom:8, lineHeight:1.6, color:T.textMuted}}>{formatInline(line)}</div>;
+    if (line.trim() === '') return <div key={i} className="h-2.5" />;
+    return <div key={i} className="mb-2 leading-relaxed" style={{color:T.textMuted}}>{formatInline(line)}</div>;
   });
 };
 
@@ -1628,6 +1629,7 @@ export default function TransformationBible() {
         ))}
       </div>
 
+      {/* Combined responsive padding and fade className to solve the duplicate key issue */}
       <div className="responsive-body-padding fade" style={{padding:"28px 20px"}}>
 
         {/* ══════════ TRAINING ══════════ */}
@@ -1736,7 +1738,7 @@ export default function TransformationBible() {
                 {/* Warm-up */}
                 {curDay.warmup.length>0 && (
                   <div style={{marginBottom:28}}>
-                    {label("Warm-Up — 8 min",T.teal)}
+                    <SectionLabel text="Warm-Up — 8 min" color={T.teal} />
                     <div style={{display:"flex",flexWrap:"wrap",gap:8}}>
                       {curDay.warmup.map((w,i)=>(
                         <div key={i} style={{background:T.surface,border:`1px solid ${T.border}`,boxShadow:T.shadow,borderRadius:8,padding:"8px 14px",fontSize:13,fontWeight:500,color:T.textMuted}}>
@@ -1750,7 +1752,7 @@ export default function TransformationBible() {
                 {/* Exercises */}
                 {curDay.exercises.length>0 && (
                   <div style={{marginBottom:28}}>
-                    {label("Exercises",curDay.color)}
+                    <SectionLabel text="Exercises" color={curDay.color} />
                     {/* Responsive Column headers (hidden on mobile, responsive classes deal with styling) */}
                     <div className="hidden sm:grid" style={{display:"grid",gridTemplateColumns:"1fr 60px 90px 120px 30px",gap:8,padding:"6px 18px",marginBottom:4}}>
                       {["Exercise","Sets","Reps","Start Weight",""].map(h=>(
@@ -1782,6 +1784,7 @@ export default function TransformationBible() {
                                   </div>
                                   <div style={{fontSize:11,fontWeight:500,color:T.textDim,marginTop:3}}>{ex.muscle}</div>
                                 </div>
+                                <span className="sm:hidden" style={{fontSize:16,fontWeight:600,color:T.textDim,display:"inline-block"}}>{open?"−":"+"}</span>
                               </div>
 
                               {/* Desktop row columns - on mobile styled dynamically as details row inside media query */}
@@ -1811,7 +1814,7 @@ export default function TransformationBible() {
                                 </div>
                                 {/* Form steps */}
                                 <div style={{marginBottom:18}}>
-                                  {label("Form — Follow strictly",curDay.color)}
+                                  <SectionLabel text="Form — Follow strictly" color={curDay.color} />
                                   {ex.form?.map((f,fi)=>(
                                     <div key={fi} style={{display:"flex",gap:12,marginBottom:10}}>
                                       <span style={{flexShrink:0,width:20,height:20,borderRadius:"50%",background:curDay.color+"20",color:curDay.color,display:"flex",alignItems:"center",justifyContent:"center",fontSize:10,fontWeight:700,marginTop:1}}>{fi+1}</span>
@@ -1849,7 +1852,7 @@ export default function TransformationBible() {
 
                 {/* Cardio */}
                 <div style={{marginBottom:24}}>
-                  {label("Cardio Focus",T.green)}
+                  <SectionLabel text="Cardio Focus" color={T.green} />
                   <div style={{background:T.surface,border:`1px solid ${T.border}`,borderLeft:`3px solid ${T.green}`,borderRadius:"0 10px 10px 0",padding:"16px 20px",boxShadow:T.shadow}}>
                     <div style={{display:"flex",gap:16,flexWrap:"wrap",marginBottom:12,justifyContent:"space-between"}}>
                       {[["Type",curDay.cardio.type,T.text],["Duration",curDay.cardio.duration,T.green],["Intensity",curDay.cardio.intensity,T.textMuted],["Timing",curDay.cardio.timing,T.textDim]].map(([l,v,c])=>(
@@ -1865,7 +1868,7 @@ export default function TransformationBible() {
 
                 {/* Cooldown */}
                 <div style={{marginBottom:32}}>
-                  {label("Cool-Down — 8 min")}
+                  <SectionLabel text="Cool-Down — 8 min" />
                   <div style={{display:"flex",flexWrap:"wrap",gap:8}}>
                     {curDay.cooldown.map((c,ci)=>(
                       <div key={ci} style={{background:T.surface,border:`1px solid ${T.border}`,boxShadow:T.shadow,borderRadius:8,padding:"8px 14px",fontSize:13,fontWeight:500,color:T.textMuted}}>{c}</div>
@@ -1875,7 +1878,7 @@ export default function TransformationBible() {
 
                 {/* ── ✨ ELITE BIOMECHANICAL DISTRIBUTION RADAR ── */}
                 <div style={{background:T.surface,border:`1px solid ${T.border}`,borderRadius:16,padding:"24px",boxShadow:T.shadowLg}}>
-                  {label("Active Session Biomechanics", curDay.color)}
+                  <SectionLabel text="Active Session Biomechanics" color={curDay.color} />
                   
                   <div className="responsive-split-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "28px", alignItems: "center" }}>
                     
@@ -1998,7 +2001,7 @@ export default function TransformationBible() {
                           <div className="meal-header-layout" style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",gap:12}}>
                             <div style={{flex:1}} onClick={()=>setMOpen(open?null:meal.name)}>
                               <div style={{display:"flex",gap:6,flexWrap:"wrap",marginBottom:8}}>
-                                {pill(meal.tag,curSlot.color)}
+                                <TagPill text={meal.tag} color={curSlot.color} />
                                 <span style={{fontFamily:T.mono,fontSize:9,fontWeight:600,color:T.textDim,background:T.bg,border:`1px solid ${T.border}`,borderRadius:10,padding:"2px 8px"}}>{meal.diff}</span>
                                 <span style={{fontFamily:T.mono,fontSize:9,fontWeight:600,color:T.textDim,background:T.bg,border:`1px solid ${T.border}`,borderRadius:10,padding:"2px 8px"}}>⏱ {meal.time}</span>
                               </div>
@@ -2060,7 +2063,7 @@ export default function TransformationBible() {
 
                             {/* Ingredients */}
                             <div style={{marginBottom:20}}>
-                              {label("Ingredients",curSlot.color)}
+                              <SectionLabel text="Ingredients" color={curSlot.color} />
                               <div style={{display:"flex",flexWrap:"wrap",gap:8}}>
                                 {meal.ing.map((ing,ii)=>(
                                   <span key={ii} style={{background:T.bg,border:`1px solid ${T.border}`,borderRadius:16,padding:"6px 14px",fontSize:12,fontWeight:500,color:T.text}}>{ing}</span>
@@ -2069,7 +2072,7 @@ export default function TransformationBible() {
                             </div>
                             {/* Recipe */}
                             <div style={{marginBottom:20}}>
-                              {label("Recipe / Steps",curSlot.color)}
+                              <SectionLabel text="Recipe / Steps" color={curSlot.color} />
                               {meal.steps.map((step,si)=>(
                                 <div key={si} style={{display:"flex",gap:14,marginBottom:12}}>
                                   <div style={{flexShrink:0,width:24,height:24,borderRadius:"50%",background:curSlot.color+"20",display:"flex",alignItems:"center",justifyContent:"center",fontSize:11,fontWeight:700,color:curSlot.color,marginTop:1}}>{si+1}</div>
@@ -2083,11 +2086,11 @@ export default function TransformationBible() {
                             {/* Notes + Swap */}
                             <div className="responsive-split-grid" style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:12}}>
                               <div style={{background:T.bg,border:`1px solid ${T.border}`,borderRadius:10,padding:"14px"}}>
-                                {label("Cook's Notes")}
+                                <SectionLabel text="Cook's Notes" />
                                 <div style={{fontSize:12,color:T.textMuted,lineHeight:1.6}}>{meal.notes||"No special notes."}</div>
                               </div>
                               <div style={{background:curSlot.color+"08",border:`1px solid ${curSlot.color}25`,borderRadius:10,padding:"14px"}}>
-                                {label("Alternative / Swap",curSlot.color)}
+                                <SectionLabel text="Alternative / Swap" color={curSlot.color} />
                                 <div style={{fontSize:12,color:T.textMuted,lineHeight:1.6}}>{meal.swap}</div>
                               </div>
                             </div>
@@ -2126,7 +2129,7 @@ export default function TransformationBible() {
                       <div>
                         <div style={{display:"flex",gap:10,alignItems:"center",marginBottom:6,flexWrap:"wrap"}}>
                           <span style={{fontSize:16,fontWeight:700,color:T.text}}>{supp.name}</span>
-                          {pill(supp.tier,tc,10)}
+                          <TagPill text={supp.tier} color={tc} />
                         </div>
                         <div style={{fontSize:12,fontWeight:500,color:T.textDim}}>{supp.timing} · <span style={{fontFamily:T.mono,fontWeight:600}}>{supp.dose}</span></div>
                       </div>
