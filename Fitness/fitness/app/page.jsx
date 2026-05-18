@@ -1249,7 +1249,7 @@ const MuscleRadarChart = ({ day, distribution }) => {
 /* ============================================================
    RENDER
 ============================================================ */
-export default function TransformationBible() {
+export default function DaedalusInitiative() {
   const [tab, setTab] = useState("training"); 
   const [wDay, setWDay] = useState("TUE");
   const [exOpen, setExOpen] = useState(null);
@@ -1420,7 +1420,7 @@ export default function TransformationBible() {
     setChatInput("");
     setChatLoading(true);
 
-    const systemInstruction = `You are the elite "Transformation Bible Coach". You are coaching a 30-year-old male, 215 lbs, whose primary focuses are Back Width, Shoulder Mass, and general belly Fat Loss under a 16-week structured plan.
+    const systemInstruction = `You are the elite "Daedalus Initiative Coach". You are coaching a 30-year-old male, 215 lbs, whose primary focuses are Back Width, Shoulder Mass, and general belly Fat Loss under a 16-week structured plan.
     You must ground your guidance strictly in the following principles:
     - Standard caloric intake is ~2,050 Cal (Phase 1). Accelerated is 1,800 Cal. High protein target is 185g+ daily.
     - Intermittent Fasting window closes strictly at 9:30 PM.
@@ -1518,7 +1518,7 @@ export default function TransformationBible() {
         <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
           <div>
             <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight leading-tight" style={{ color: T.text }}>
-              The Transformation<br />Bible
+              The Daedalus<br />Initiative
             </h1>
             <p className="text-xs sm:text-sm text-slate-500 mt-2">Male · 30 · 215 lb · Back Width · Shoulder Mass · Fat Loss</p>
           </div>
