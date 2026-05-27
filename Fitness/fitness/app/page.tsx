@@ -835,7 +835,7 @@ const [aiMealResults, setAiMealResults] = useState<Record<string, string>>({});
 
   const callGemini = async (prompt: string, sys = "") => {
     if (!geminiApiKey) throw new Error("No API Key. Add in AI Coach tab.");
-    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${geminiApiKey}`;
+    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${geminiApiKey}`;
     const res = await fetch(url, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
