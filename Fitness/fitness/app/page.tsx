@@ -1,6 +1,12 @@
 "use client";
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo, useEffect, ReactNode } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+
+interface GlassCardProps extends React.HTMLAttributes<HTMLDivElement> {
+  children: ReactNode;
+  elevated?: boolean;
+  // className, style, etc., are already included by HTMLAttributes
+}
 
 /* ─────────────────────────────────────────────────────────────
    DESIGN TOKENS
@@ -608,20 +614,41 @@ const MEALS = [
   ]},
 ];
 
-const SUPPS = [
+interface Supplement {
+  name: string;
+  tier: string;
+  tc: string;
+  timing: string;
+  dose: string;
+  why: string;
+  brand: string;
+}
+
+interface RuleGroups {
+  training: string[];
+  nutrition: string[];
+  lifestyle: string[];
+}
+
+interface FAQItem {
+  q: string;
+  a: string;
+}
+
+const SUPPS: Supplement[] = [
   { name: "Whey Protein Isolate", tier: "Essential", tc: T.red, timing: "Within 60 min post-workout", dose: "1 scoop (25g protein)", why: "Fastest absorbing protein. Hits muscles during critical recovery window.", brand: "Optimum Nutrition Gold Standard." },
   { name: "Creatine Monohydrate", tier: "Essential", tc: T.red, timing: "Daily, any consistent time", dose: "5g daily", why: "Most researched supplement. Proven 5–15% strength increase.", brand: "Pure monohydrate, unflavored, micronized." },
   { name: "Omega-3 Fish Oil", tier: "High Priority", tc: T.amber, timing: "With any whole meal", dose: "2 caps daily", why: "Reduces exercise-induced inflammation, supports joint health.", brand: "Enteric-coated prevents fish burps." },
   { name: "Vitamin D3 + Zinc", tier: "High Priority", tc: T.amber, timing: "With dinner tracking", dose: "5000 IU / 15mg", why: "Critical for optimization, bone architecture and metabolic support.", brand: "Combined highly bioavailable formulas." },
 ];
 
-const RULES = {
+const RULES: RuleGroups = {
   training: ["Never skip Tuesday Pull Day — builds the V-taper", "Progressive overload every session", "Log every lift in Notes app", "Form first, weight second — always", "Warm-up is not optional — 8 min prevents months of setback", "Face pulls at end of EVERY session", "Never train same muscle 2 consecutive days", "Deload every 8 weeks (−20% load)", "Last 2 reps of every set should be genuinely difficult", "Sleep is when muscle is built", "Cardio enhances fat loss but never replaces lifting", "Rest days are growth days"],
   nutrition: ["Hit 185g+ protein daily — non-negotiable", "Close eating window by 9:30 PM every night", "Drink 3–4L water daily", "Meal prep Sunday — 90 min prevents 5 days of poor decisions", "Rice portions: ¾–1 cup cooked at lunch, ¾ cup at dinner", "Your 2 daily chais with 2% milk are fully built in", "Eat vegetables at every dinner", "Healthy fat ≠ body fat. Eat avocado, walnuts, olive oil", "Never go more than 5 hours without protein", "Roti is fine occasionally — 1 roti = ~120 cal", "One social meal per week is completely fine"],
   lifestyle: ["7–8 hours sleep = GH peaks and fat burns", "10,000 steps daily. Burns 350–400 extra calories", "Chronic stress → high cortisol → belly fat", "Progress photos every 2 weeks", "Measure waist with tape weekly", "Scale fluctuates 2–5 lbs daily. Weigh weekly", "Morning sunlight within 30 min of waking", "Vitamin D from sunlight poorly synthesized in South Asian skin", "Alcohol impairs recovery. Limit to rare occasions", "Timeline: 2–3\" off waist by week 8. Dramatic by week 16–20"],
 };
 
-const FAQS = [
+const FAQS: FAQItem[] = [
   { q: "Why am I not losing weight on the scale?", a: "Body weight fluctuates 2–5 lbs daily from water, sodium, digestion. Measure weekly — same day, same time. More importantly: measure your waist with a tape. You may be building muscle AND losing fat simultaneously." },
   { q: "My chest fat isn't moving — why?", a: "Chest and belly fat are the last to go for most men. Solution: consistent caloric deficit + building chest muscle underneath. By month 3–4 the visual change is dramatic." },
   { q: "Can I eat roti or paratha?", a: "Absolutely. 1 roti = ~120 cal, 4g protein. 1 paratha = 200–250 cal. On roti days, reduce rice at that meal. Once-a-week paratha is completely compatible." },
@@ -633,7 +660,10 @@ const FAQS = [
 /* ─────────────────────────────────────────────────────────────
    SHARED PRIMITIVES
    ───────────────────────────────────────────────────────────── */
-const GlassCard = ({ children, elevated = false, className = "", style = {}, ...rest }) => (
+const GlassCard = ({ 
+  children, elevated = false, className = "", style = {},
+  // ...rest 
+}: GlassCardProps) => (
   <div
     className={className}
     style={{
@@ -647,32 +677,32 @@ const GlassCard = ({ children, elevated = false, className = "", style = {}, ...
         : "0 1px 0 rgba(255,255,255,0.6) inset, 0 1px 2px rgba(15,23,42,0.04), 0 8px 24px -12px rgba(15,23,42,0.08)",
       ...style,
     }}
-    {...rest}
+    // {...rest}
   >
     {children}
   </div>
 );
 
-const SectionLabel = ({ text, color = T.textDim }) => (
+const SectionLabel = ({ text, color = T.textDim }: { text: string; color?: string }) => (
   <div className="font-mono text-[10px] tracking-[0.22em] uppercase font-semibold mb-3" style={{ color }}>
     {text}
   </div>
 );
 
-const TagPill = ({ text, color }) => (
+const TagPill = ({ text, color }: { text: string; color: string }) => (
   <span className="text-[10px] px-2 py-0.5 rounded-full font-semibold tracking-wide whitespace-nowrap" style={{ background: `${color}18`, border: `1px solid ${color}35`, color }}>
     {text}
   </span>
 );
 
-const StatTile = ({ value, label, color }) => (
+const StatTile = ({ value, label, color }: { value: ReactNode; label: string; color?: string }) => (
   <GlassCard className="p-3.5 text-center">
     <div className="font-mono text-base font-bold leading-tight" style={{ color }}>{value}</div>
     <div className="font-mono text-[9px] font-semibold uppercase tracking-wider mt-1" style={{ color: T.textDim }}>{label}</div>
   </GlassCard>
 );
 
-const formatInline = (text) => {
+const formatInline = (text: string) => {
   const parts = text.split(/(\*\*.*?\*\*|\*.*?\*)/g);
   return parts.map((part, i) => {
     if (part.startsWith('**') && part.endsWith('**')) return <strong key={i} className="font-bold" style={{ color: T.text }}>{part.slice(2, -2)}</strong>;
@@ -681,7 +711,7 @@ const formatInline = (text) => {
   });
 };
 
-const formatAIResponse = (text) => {
+const formatAIResponse = (text: string) => {
   if (!text) return null;
   const lines = text.split('\n');
   return lines.map((line, i) => {
@@ -706,7 +736,7 @@ const formatAIResponse = (text) => {
 /* ─────────────────────────────────────────────────────────────
    FATIGUE SCORE & RADAR CHART
    ───────────────────────────────────────────────────────────── */
-const FatigueScore = ({ score, color }) => {
+const FatigueScore = ({ score, color }: { score: number; color: string }) => {
   const label = score < 30 ? "Low" : score < 60 ? "Moderate" : score < 80 ? "High" : "Peak";
   const barColor = score < 30 ? T.green : score < 60 ? T.amber : score < 80 ? color : T.red;
   return (
@@ -728,7 +758,7 @@ const FatigueScore = ({ score, color }) => {
   );
 };
 
-const MuscleRadarChart = ({ day, distribution }) => {
+const MuscleRadarChart = ({ day, distribution }: { day: { key: string; color: string }; distribution: { name: string; count: number }[] }) => {
   const axes = ["Back", "Shoulders", "Chest", "Arms", "Core", "Legs"];
   const dataMap = axes.map(axis => {
     const match = distribution.find(d => d.name.toLowerCase().includes(axis.toLowerCase()));
@@ -736,7 +766,7 @@ const MuscleRadarChart = ({ day, distribution }) => {
   });
   const center = 50, radius = 34;
   const maxCount = Math.max(...dataMap, 4);
-  const getPoint = (v, i) => {
+  const getPoint = (v: number, i: number) => {
     const r = (v / maxCount) * radius;
     const rad = (i * 60 - 90) * (Math.PI / 180);
     return { x: center + r * Math.cos(rad), y: center + r * Math.sin(rad) };
@@ -772,42 +802,38 @@ const MuscleRadarChart = ({ day, distribution }) => {
 export default function FitnessDashboard() {
   const [tab, setTab] = useState("training");
   const [wDay, setWDay] = useState("MON");
-  const [exOpen, setExOpen] = useState(null);
-  
+const [exOpen, setExOpen] = useState<string | null>(null);
+
   const [mSlot, setMSlot] = useState("breakfast");
-  const [mOpen, setMOpen] = useState(null);
-  
-  const [rTab, setRTab] = useState("training");
-  const [sOpen, setSOpen] = useState(null);
-  const [fOpen, setFOpen] = useState(null);
+const [mOpen, setMOpen] = useState<string | null>(null);
+
+  const [rTab, setRTab] = useState<keyof RuleGroups>("training");
+  const [sOpen, setSOpen] = useState<number | null>(null);
+const [fOpen, setFOpen] = useState<number | null>(null);
 
   // AI & Chat State
-  const [geminiApiKey, setGeminiApiKey] = useState("");
+  const [geminiApiKey, setGeminiApiKey] = useState<string | null>(() => {
+    if (typeof window === "undefined") return null;
+    return window.localStorage.getItem("user_gemini_api_key");
+  });
   const [aiWorkoutInput, setAiWorkoutInput] = useState("");
-  const [aiWorkoutResult, setAiWorkoutResult] = useState(null);
+const [aiWorkoutResult, setAiWorkoutResult] = useState<string | null>(null);
   const [aiWorkoutLoading, setAiWorkoutLoading] = useState(false);
   
   const [aiMealInput, setAiMealInput] = useState("");
-  const [aiMealResults, setAiMealResults] = useState({});
-  const [aiMealLoading, setAiMealLoading] = useState({});
+const [aiMealResults, setAiMealResults] = useState<Record<string, string>>({});
+  const [aiMealLoading, setAiMealLoading] = useState<Record<string, boolean>>({});
   
   const [chatMessages, setChatMessages] = useState([{ role: "assistant", text: "Salam! Ask me about workouts, Desi food swaps, form setup, or IF timing. Grounded in your 16-week plan." }]);
   const [chatInput, setChatInput] = useState("");
   const [chatLoading, setChatLoading] = useState(false);
 
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      const k = window.localStorage.getItem("user_gemini_api_key");
-      if (k) setGeminiApiKey(k);
-    }
-  }, []);
-
-  const saveKey = (k) => {
+  const saveKey = (k:  string) => {
     setGeminiApiKey(k);
     if (typeof window !== "undefined") window.localStorage.setItem("user_gemini_api_key", k);
   };
 
-  const callGemini = async (prompt, sys = "") => {
+  const callGemini = async (prompt: string, sys = "") => {
     if (!geminiApiKey) throw new Error("No API Key. Add in AI Coach tab.");
     const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${geminiApiKey}`;
     const res = await fetch(url, {
@@ -824,19 +850,27 @@ export default function FitnessDashboard() {
     if (!aiWorkoutInput.trim()) return;
     setAiWorkoutLoading(true);
     const cur = WORKOUT_DAYS.find(d => d.key === wDay);
+    if (!cur) {
+      setAiWorkoutResult("Error: Invalid workout day.");
+      setAiWorkoutLoading(false);
+      return;
+    }
     try {
       const r = await callGemini(`Adapt ${cur.label} day (${cur.sub}) for: "${aiWorkoutInput}". Keep structure, include sets/reps/form cues. Markdown.`, "Elite trainer. Concise. Markdown.");
       setAiWorkoutResult(r);
-    } catch (e) { setAiWorkoutResult("Error: " + e.message); }
+    } catch (e: unknown) {
+      const msg = e instanceof Error ? e.message : String(e);
+      setAiWorkoutResult("Error: " + msg);
+    }
     setAiWorkoutLoading(false);
   };
 
-  const handleMealRemix = async (meal) => {
+  const handleMealRemix = async (meal: { name: string; desc: string }) => {
     setAiMealLoading(p => ({ ...p, [meal.name]: true }));
     try {
       const r = await callGemini(`Remix ${meal.name} (${meal.desc}) for: "${aiMealInput || 'make it a diverse pakistani or healthy twist'}". Include macros, ingredients, steps.`, "Elite chef nutritionist. Markdown.");
       setAiMealResults(p => ({ ...p, [meal.name]: r }));
-    } catch (e) { console.error(e); }
+    } catch (e: unknown) { console.error(e); }
     setAiMealLoading(p => ({ ...p, [meal.name]: false }));
   };
 
@@ -849,7 +883,7 @@ export default function FitnessDashboard() {
       const sys = "Elite transformation coach. 30yo male, 215lb. 16-week plan: Push/Pull/Cardio+Core/Legs/HIIT/Recovery/Rest. 2050 cal, 185g protein. Concise, scientific, formatted.";
       const r = await callGemini(`${chatMessages.slice(-6).map(m => `${m.role}: ${m.text}`).join('\n')}\nuser: ${chatInput}`, sys);
       setChatMessages(p => [...p, { role: "assistant", text: r }]);
-    } catch (e) { setChatMessages(p => [...p, { role: "assistant", text: "Connection issue. Check API key." }]); }
+    } catch (e: unknown) { setChatMessages(p => [...p, { role: "assistant", text: "Connection issue. Check API key." }]); }
     setChatLoading(false);
   };
 
@@ -858,10 +892,10 @@ export default function FitnessDashboard() {
 
   const muscleDist = useMemo(() => {
     if (!curDay) return [];
-    const c = {}; let t = 0;
+    const c: Record<string, number> = {}; let t = 0;
     curDay.exercises.forEach(ex => {
       const m = (ex.muscle || "").toLowerCase();
-      const targets = [];
+      const targets: string[] = [];
       if (m.includes("chest") || m.includes("pec")) targets.push("Chest");
       if (m.includes("shoulder") || m.includes("delt") || m.includes("ohp") || m.includes("lateral") || m.includes("arnold") || m.includes("shrug") || m.includes("face pull")) targets.push("Shoulders");
       if (m.includes("back") || m.includes("lat") || m.includes("row") || m.includes("deadlift") || m.includes("pull")) targets.push("Back");
@@ -1070,7 +1104,7 @@ export default function FitnessDashboard() {
                                           {ex.mistakes.map((m, mi) => <div key={mi} className="text-xs mb-1" style={{ color: T.textMuted }}>✗ {m}</div>)}
                                         </div>
                                         <div className="rounded-xl p-3" style={{ background: `${T.blue}08`, border: `1px solid ${T.blue}20` }}>
-                                          <div className="font-mono text-[9px] font-bold uppercase tracking-wider mb-1.5" style={{ color: T.blue }}>Coach's Tip</div>
+                                          <div className="font-mono text-[9px] font-bold uppercase tracking-wider mb-1.5" style={{ color: T.blue }}>Coach&apos;s Tip</div>
                                           <div className="text-xs leading-relaxed" style={{ color: T.textMuted }}>{ex.tip}</div>
                                         </div>
                                         {ex.advanced && (
@@ -1329,7 +1363,13 @@ export default function FitnessDashboard() {
           {tab === "rules" && (
             <motion.div key="rules" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} className="space-y-4">
               <div className="grid grid-cols-3 gap-2">
-                {[["training", "Training", T.blue], ["nutrition", "Nutrition", T.green], ["lifestyle", "Lifestyle", T.purple]].map(([k, l, c]) => (
+                {(
+                  [
+                    ["training", "Training", T.blue],
+                    ["nutrition", "Nutrition", T.green],
+                    ["lifestyle", "Lifestyle", T.purple],
+                  ] as const
+                ).map(([k, l, c]) => (
                   <button key={k} onClick={() => setRTab(k)} className="rounded-xl py-2.5 px-3 text-sm font-bold capitalize transition-all" style={{ background: rTab === k ? `${c}12` : T.surface, backdropFilter: "blur(24px) saturate(180%)", border: `1px solid ${rTab === k ? c : T.border}`, color: rTab === k ? c : T.textMuted }}>
                     {l}
                   </button>
@@ -1382,7 +1422,7 @@ export default function FitnessDashboard() {
                 </div>
                 <p className="text-xs" style={{ color: T.textMuted }}>Paste your personal Gemini API Key. Saved in browser localStorage only.</p>
                 <div className="flex gap-2">
-                  <input type="password" value={geminiApiKey} onChange={e => saveKey(e.target.value)} placeholder="AIzaSy..." className="flex-1 rounded-xl px-4 py-2.5 text-sm font-mono" style={{ background: T.surfaceAlt, border: `1px solid ${T.border}`, color: T.text }} />
+                  <input type="password" value={geminiApiKey || ""} onChange={e => saveKey(e.target.value)} placeholder="AIzaSy..." className="flex-1 rounded-xl px-4 py-2.5 text-sm font-mono" style={{ background: T.surfaceAlt, border: `1px solid ${T.border}`, color: T.text }} />
                   {geminiApiKey && <button onClick={() => saveKey("")} className="rounded-xl px-4 text-sm font-semibold transition-all" style={{ background: `${T.red}15`, color: T.red, border: `1px solid ${T.red}30` }}>Clear</button>}
                 </div>
                 {geminiApiKey && <div className="text-xs font-semibold flex items-center gap-1" style={{ color: T.green }}>✓ Key saved locally</div>}
